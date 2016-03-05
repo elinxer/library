@@ -9,7 +9,7 @@
  * 如若要使用务必开启session以便在需要处进行验证
  +-----------------------------------------------------------------------------
  */
-function getCode($num=4, $w=60, $h=25) {
+function get_code($num=4, $w=60, $h=25) {
     // 去掉了 0 1 O l 等
     $str  = "0123456789abcdefghijkmnpqrstuvwxyz";
     $code = '';

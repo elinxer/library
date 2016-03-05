@@ -154,7 +154,7 @@ function insert_sort($arr=array(1,43,54,62,21,66,32,78,36,76,39)) {
  +-----------------------------------------------------------------------------
  * 快速排序
  +-----------------------------------------------------------------------------
- * 思路分析：选择一个基准元素，通常选择第一个元素或者最后一个元素。通过一趟扫描，
+ * 思路分析：选择一个基准元素，通常选择第一个元素或者最后一个元素。通过一趟扫描
  * 将待排序列分成两部分，一部分比基准元素小，一部分大于等于基准元素。此时基准元
  * 素在其排好序后的正确位置，然后再用同样的方法递归地排序划分的两部分。
  +-----------------------------------------------------------------------------
@@ -169,7 +169,7 @@ function quick_sort($arr=array(1,43,54,62,21,66,32,78,36,76,39)) {
     $base_num = $arr[0];
     //遍历除了标尺外的所有元素，按照大小关系放入两个数组内
     //初始化两个数组
-    $left_array = array();  //小于基准的
+    $left_array  = array();  //小于基准的
     $right_array = array();  //大于基准的
     for($i=1; $i<$length; $i++) {
         if($base_num > $arr[$i]) {
@@ -181,7 +181,7 @@ function quick_sort($arr=array(1,43,54,62,21,66,32,78,36,76,39)) {
         }
     }
     //再分别对左边和右边的数组进行相同的排序处理方式递归调用这个函数
-    $left_array = quick_sort($left_array);
+    $left_array  = quick_sort($left_array);
     $right_array = quick_sort($right_array);
     //合并
     return array_merge($left_array, array($base_num), $right_array);
@@ -199,7 +199,7 @@ function quick_sort($arr=array(1,43,54,62,21,66,32,78,36,76,39)) {
  +-----------------------------------------------------------------------------
  */
 function binary_earch(Array $arr, $target) {
-    $low = 0;
+    $low  = 0;
     $high = count($arr) - 1;
     while($low <= $high) {
         $mid = floor(($low + $high) / 2);
@@ -226,12 +226,12 @@ function binary_earch(Array $arr, $target) {
  */
 function seq_sch($array, $n, $k){
     $array[$n] = $k;
-    for($i=0; $i<$n; $i++){
-        if($array[$i]==$k){
+    for($i=0; $i < $n; $i++) {
+        if ($array[$i] == $k) {
             break;
         }
     }
-    if ($i<$n){
+    if ($i < $n){
         return $i;
     }else{
         return -1;

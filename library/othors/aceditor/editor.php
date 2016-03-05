@@ -18,14 +18,14 @@
  * 建议在 chrome 浏览器中使用本编辑器
  */
 session_start();
-$curr_file 		= __FILE__; //默认编辑当前文件
+$curr_file = __FILE__; //默认编辑当前文件
 $curr_file_path = str_replace(dirname(__FILE__), '', __FILE__);
-$pwd 			= "0ea88cbf4ce7386f387cd3b1b83652b5"; //密码初始化默认值为 false
-$ace 			= 'http://cdn.staticfile.org/ace/1.1.3/ace.js'; //编辑器核心js
-$tip['core'] 	= 'http://cdn.staticfile.org/alertify.js/0.3.11/alertify.core.min.css';
-$tip['css'] 	= 'http://cdn.staticfile.org/alertify.js/0.3.11/alertify.default.min.css';
-$tip['js'] 		= 'http://cdn.staticfile.org/alertify.js/0.3.11/alertify.min.js';
-$jquery 		= 'http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js';
+$pwd = false; //密码初始化默认值为 false
+$ace = 'http://cdn.staticfile.org/ace/1.1.3/ace.js'; //编辑器核心js
+$tip['core'] = 'http://cdn.staticfile.org/alertify.js/0.3.11/alertify.core.min.css';
+$tip['css'] = 'http://cdn.staticfile.org/alertify.js/0.3.11/alertify.default.min.css';
+$tip['js'] = 'http://cdn.staticfile.org/alertify.js/0.3.11/alertify.min.js';
+$jquery = 'http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js';
 
 if ( false !== $pwd ) {
 	define('DEFAULT_PWD', $pwd);
@@ -333,6 +333,7 @@ if ( false !== $pwd && !empty($_POST) ) {
 
 //处理一下html实体
 $code = htmlspecialchars($code);
+
 $dir_icon = str_replace(array("\r\n", "\r", "\n"), '',
 'data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAANCAYAAACgu+4kAAAAGXRFWHRTb2Z0d2
 FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQVJREFUeNqkkk1uwjAQhd84bsNP1FUXLCtu0H3XPSoX4Qrd9wR
@@ -340,6 +341,7 @@ sCjQEcIY3DiiJUYiqRhp5Mra/92YSUVVgLSW49B7H+NApRh75XkHfFoCG+02tyflUeQTw2y9UYYP8cCS
 PeVA/Sy6Dw555q3au1z+EhBYk1cgO7OSNdaFNT0x5sCkYDha0WPiHZgVqPzLO+8seai6E2jed42bCL06tNyEH
 AX9kv3jh3HqH7BctFWLMOmAbcg05mHK5+sQpd1HYijN47zcDUCShGEHtzxtwQS9WTcAQmJROrJDLXQB9s1Tu6
 MtRED4bwsHLnUzxEeKac3+GeP6eo8yevhjC3F1qC4CDAAl3HwuyNAIdwAAAABJRU5ErkJggg==');
+
 $file_icon = str_replace(array("\r\n", "\r", "\n"), '',
 'data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAQCAYAAADJViUEAAAAGXRFWHRTb2Z0d2
 FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAS1JREFUeNqMU01KxkAMTaez7aYbNwreQdBzeopS6EXEW+jug7Z
@@ -348,6 +350,7 @@ DsOA4zge6Pseu67DpmlEqK5rLMvyRkDJor6uq2SGktu2FfdpmpANqqoSASYnO/kthABJkoCOxCASkCBk
 qCeNE1fqHz3fMkXzjnJ2sRinL33QBNIzWJ5nh/L8npQohVTJwYTyfFm/d6Oo2HGE8ffwseuZ1PEjhrOutmsRF
 0iC8QmPibEtT4hftrhHI95JqJT/HC2JOt0to+zN6MVsZ/oZKqwmyCTA33DkbN1sws0i+Pega6v0kd42H9JB/8
 LJl5I6PNbgAEAa9MP7QWoNLoAAAAASUVORK5CYII=');
+
 $loading = str_replace(array("\r\n", "\r", "\n"), '',
 'data:image/gif;base64,R0lGODlhFAAUALMIAPh2AP+TMsZiALlcAKNOAOp4ANVqAP+PFv///wAAAAAAAA
 AAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgAIACwAAAAAFAAUAAAEUxDJSau9iBDMteb
@@ -364,6 +367,7 @@ AAgALAEAAQASABIAAAROEMkpz6E4W5tpCNUmAQD2feFIltMJYivbvhnZ3R1B4FNRIDodz+cL7nDEn5CH
 8HNYMBEoxkqlXKVIgQCibbK9YLBYvLtHH5K0J0IACH5BAkKAAgALAEAAQASABIAAAROEMkpQ6A4W5spIdUmHQ
 f2feFIltMJYivbvhnZ3d0w4BMAIDodz+cL7nDEn5CH8DGZAsGtUMBEoxkqlXKVIgwGibbK9YLBYvLtHH5K0J0
 IADs=');
+
 //编辑器模版
 $html = <<<HTMLSTR
 <!DOCTYPE html>
