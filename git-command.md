@@ -1,22 +1,36 @@
 
-##git 使用命令
+# git 使用命令
 
 - 初始化仓库
 git init
 
+- 创建本地密匙key，用于远程仓库识别
+
+
+
+- 本地配置远程仓库用户名和邮箱
+git config --global user.name "你的用户名"
+git config --global user.email "你的邮箱地址"
+
+
 - 提交到远程库
 - 可以先执行git pull命令远程命令来同步自己的本地仓库。
 git pull
+或者
+git pull origin master
 - 然后再
 git push -u origin master
 
 - 添加需要提交的文件
 git add filename
 
-- 批量提交
+- 批量添加
 git add -A
 
-- 文件提交
+- 添加当前目录所有文件
+git add .
+
+- 文件提交到本地仓库
 git commit -m '本次提交说明';
 
 - 查看github远程连接问题
