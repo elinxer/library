@@ -1,5 +1,17 @@
 <?php
-
+/**
+ * 邮箱验证
+ * @param string $email 需要验证的邮箱
+ * @return boolean
+ */
+function verify_email($email="") {
+    $pattern = "/^[_.0-9a-z-a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$/";
+    if (!preg_match($pattern, $email)){
+       return false;
+    } else {
+        return true;
+    }
+}
 /**
  * php对url解码和编码
  * @param string $url
