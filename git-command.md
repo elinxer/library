@@ -182,3 +182,15 @@ git remote add origin git@github.com:daixu/WebApp.git
 git push -u origin master
 
 ```
+
+```
+- git 解决冲突问题
+git stash 
+git pull 
+git stash pop
+然后可以使用git diff -w +文件名 来确认代码自动合并的情况.
+
+反过来,如果希望用代码库中的文件完全覆盖本地工作版本. 方法如下:
+git reset --hard 
+git pull
+```
