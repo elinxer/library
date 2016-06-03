@@ -49,6 +49,11 @@ foreach ($parsed as $argument) {
 }
 // 构成控制器文件路径
 $target = SERVER_ROOT.'/controllers/'.$page.'.php';
+
+if ($page == "") { //默认调用控制器
+	echo "<script>window.location.href ='index.php?news&article=mvc'; </script>";exit();
+}
+
 // 引入目标文件
 if (file_exists($target)) {
 	include_once($target);
