@@ -2,6 +2,37 @@
 
 /**
  +-----------------------------------------------------------------------------
+ * 保存指定路径的图片
+ +-----------------------------------------------------------------------------
+ * @param string $url 完整图片地址
+ * @param string $filename 另存为的图片名字
+ * @param string $save_dir 保存指定路径
+ * @return mixed
+ * @author elinx <654753115@qq.com> 2016-06-11
+ * save_image("http://www.w3school.com.cn/ui/bg.gif");
+ +-----------------------------------------------------------------------------
+ */
+function save_image($url, $filename="", $save_dir="./images/"){ 
+    if($url == ""){return false;}
+    $pic_ext = strrchr($url, ".");/*得到图片的扩展名*/
+    $ext     = array(".gif", ".png", ".jpg", ".bmp"); /* 支持格式 */
+    if(!in_array($pic_ext, $ext)){echo "格式不支持！";return false;} 
+    if($filename == ""){$filename = time().$pic_ext;} /*间戳另起名*/
+    if (!is_dir($save_dir)) { echo "保存 {$save_dir} 目录不存在！";return false; }
+    /*开始捕捉图片流*/
+    ob_start(); /*图片数据开启缓存*/
+    readfile($url);
+    $img  = ob_get_contents();
+    ob_end_clean();/*图片数据缓存清除*/
+    $size = strlen($img);
+    $fp   = fopen($save_dir.$filename , "a");/*打开路径*/
+    fwrite($fp, $img);/*写入图片数据流*/
+    fclose($fp);
+    return $filename;
+}
+
+/**
+ +-----------------------------------------------------------------------------
  * 在PHP数组中生成.csv 文件 
  +-----------------------------------------------------------------------------
  * @param string $data
