@@ -1,48 +1,56 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006-2012 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: pengyong <i@pengyong.info>
-// +----------------------------------------------------------------------
-// import("ORG.File");
-// //创建目录
-// File::mk_dir($dir);
-// //读取文件内容
-// File::read_file($filename);
-// //文件写入
-// File::write_file($filename,$content,$openmod);
-// //目录删除
-// File::del_dir($dir);
-// //复制目录
-// File::copy_dir($surDir,$toDir);
-// //列出目录
-//  $dirArray = File::get_dirs($dir);
-//  //$dirArray['dir']:存文件夹；$dirArray['file']：存文件
-// //统计文件夹大小,单位 B
-// File::get_size($dir);
-// //检测是否为空文件夹
-// if(File::empty_dir($dir)==true)
-// {
-//     echo $dir.'不是空文件夹';
-// }
-// //文件缓存与文件读取
-// File::cache($name, $value='', $path=DATA_PATH,$cached=true) ;
-//+----------------------------------------------------------------------
-class File
+/**
+ +-----------------------------------------------------------------------------
+ * @ 文件常规操作类
+ +-----------------------------------------------------------------------------
+ * Copyright (c) 2016 http://yangdongshenge.cn All rights reserved.
+ +-----------------------------------------------------------------------------
+ * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+ +-----------------------------------------------------------------------------
+ * Author: elinx <654753115@qq.com> modified：2016-06-08
+ +-----------------------------------------------------------------------------
+ */
+/*
+//创建目录
+FileOperation::mk_dir($dir);
+//读取文件内容
+FileOperation::read_file($filename);
+//文件写入
+FileOperation::write_file($filename,$content,$openmod);
+//FileOperation目录删除
+FileOperation::del_dir($dir);
+//复制目录
+FileOperation::copy_dir($surDir,$toDir);
+//列出目录
+ $dirArray = FileOperation::get_dirs($dir);
+ //$dirArray['dir']:存文件夹；$dirArray['file']：存文件
+//统计文件夹大小,单位 B
+FileOperation::get_size($dir);
+//检测是否为空文件夹
+if(FileOperation::empty_dir($dir)==true)
 {
-	/*
-		@function  		创建目录
-		
-		@var:$filename  目录名
-			
-		@return:   		true
-	*/
+    echo $dir.'不是空文件夹';
+}
+//文件缓存与文件读取
+FileOperation::cache($name, $value='', $path=DATA_PATH,$cached=true) ;
+*/
+//+----------------------------------------------------------------------
+
+class FileOperation
+{
+	private $document_root;
 	
-	static public function mk_dir($dir)
+	function __construct() {
+		// 设置文档根目录地址
+		$this->document_root = $_SERVER['DOCUMENT_ROOT'];
+	}
+
+	/**
+	 * 创建目录
+	 * @var $filename  目录名
+	 * @return boolean
+	*/
+	public static function mk_dir($dir)
 	{
 		$dir = rtrim($dir,'/').'/';
 		if(!is_dir($dir))
@@ -55,17 +63,13 @@ class File
 		}
 		return true;
 	}
-	
 
-	/*
-		@function  		读取文件内容
-		
-		@var:$filename  文件名
-			
-		@return:   		文件内容
-	*/
-	
-	static public function read_file($filename)
+	/**
+	 * 读取文件内容
+	 * @var $filename  文件名
+	 * @return 文件内容
+	 */
+	public static function read_file($filename)
 	{
 		$content = '';
 		if(function_exists('file_get_contents')) 
@@ -83,19 +87,14 @@ class File
 		return $content;
 	}
 	
-	/*
-		@function  		写文件
-		
-		@var:$filename  文件名
-		
-		@var:$writetext 文件内容
-		
-		@var:$openmod 	打开方式
-			
-		@return:   		成功=true
-	*/
-	
-	static function write_file($filename, $writetext, $openmod='w')
+	/**
+	 * 写文件操作
+	 * @var $filename  文件名
+	 * @var $writetext 文件内容
+	 * @var $openmod 	打开方式
+	 * @return boolean
+	 */
+	public static function write_file($filename, $writetext, $openmod='w')
 	{
 		if(@$fp = fopen($filename, $openmod)) 
 		{
@@ -109,17 +108,13 @@ class File
 			return false;
 		}
 	}
-	
 
-	/*
-		@function  		删除目录
-		
-		@var:$dirName  	原目录
-			
-		@return:   		成功=true
-	*/
-	
-	static function del_dir($dirName)
+	/**
+	 * 删除目录
+	 * @var $dirName  	原目录
+	 * @return boolean
+	 */
+	public static function delete_dir($dirName)
 	{
 		if (!file_exists($dirName))
 		{
@@ -146,17 +141,13 @@ class File
 		return rmdir($dirName);			
 	}
 	
-	/*
-		@function  		复制目录
-		
-		@var:$surDir  	原目录
-		
-		@var:$toDir  	目标目录
-		
-		@return:   		true
-	*/
-	
-	static function copy_dir($surDir,$toDir)
+	/**
+	 * 复制目录
+	 * @var $surDir  	原目录
+	 * @var $toDir  	目标目录
+	 * @return boolean
+	 */
+	public static function copy_dir($surDir,$toDir)
 	{
 		$surDir = rtrim($surDir,'/').'/';
 		$toDir = rtrim($toDir,'/').'/';
@@ -190,18 +181,13 @@ class File
 		return true;
 	}
 	
-
-	/*
-		@function  列出目录
-		
-		@var:$dir  目录名
-		
-		@return:   目录数组
-		
-		列出文件夹下内容，返回数组 $dirArray['dir']:存文件夹；$dirArray['file']：存文件
-	*/
-	
-	static function get_dirs($dir) 
+	/**
+	 * 列出目录
+	 * @var $dir  目录名
+	 * @return 目录数组
+	 * 列出文件夹下内容，返回数组 $dirArray['dir']:存文件夹；$dirArray['file']：存文件
+	 */
+	public static function get_dirs($dir) 
 	{
 		$dir = rtrim($dir,'/').'/';
 		$dirArray [][] = NULL;
@@ -227,15 +213,12 @@ class File
 		return $dirArray;
 	}
 	
-	/*
-		@function  统计文件夹大小
-		
-		@var:$dir  目录名
-		
-		@return:   文件夹大小(单位 B)
+	/**
+	 * 统计文件夹大小
+	 * @var $dir  目录名
+	 * @return 文件夹大小(单位 B)
 	*/
-	
-	static function get_size($dir)
+	public static function get_size($dir)
 	{ 
 		$dirlist = opendir($dir);
 		$dirsize = 0;
@@ -257,34 +240,25 @@ class File
 		return $dirsize;
 	}
 	
-	/*
-		@function  检测是否为空文件夹
-		
-		@var:$dir  目录名
-		
-		@return:   存在则返回true
+	/**
+	 * 检测是否为空文件夹
+	 * @var $dir  目录名
+	 * @return 存在则返回true
 	*/
-	
-	static function empty_dir($dir)
+	public static function empty_dir($dir)
 	{
 		return (($files = @scandir($dir)) && count($files) <= 2); 
 	}
 	
-	/*
-		@function  文件缓存与文件读取
-		
-		@var:$name  文件名
-		
-		@var:$value  文件内容,为空则获取缓存
-		
-		@var:$path   文件所在目录,默认是当前应用的DATA目录
-		
-		@var:$cached  是否缓存结果,默认缓存
-		
-		@return:   返回缓存内容
+	/**
+	* 文件缓存与文件读取
+	 * @var $name  文件名
+	 * @var $value  文件内容,为空则获取缓存
+	 * @var $path   文件所在目录,默认是当前应用的DATA目录
+	 * @var $cached  是否缓存结果,默认缓存
+	 * @return 返回缓存内容
 	*/
-	
-	function cache($name, $value='', $path=DATA_PATH,$cached=true) 
+	public function cache($name, $value='', $path=DATA_PATH,$cached=true) 
 	{
 		static $_cache  = array();
 		$filename       = $path . $name . '.php';

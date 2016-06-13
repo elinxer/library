@@ -25,7 +25,7 @@ echo fun(20); //算法使用
  * @param $n 总阶梯数，默认20
  * @return 递归返回 int
  */
-function f($n = 20) {
+function fun($n = 20) {
 	if ($n > 30) { /* 防止n阶过大导致计算机死机 */
 		echo "n超过30后普通计算机难以计算，终止运行！";
 		exit();
@@ -36,6 +36,6 @@ function f($n = 20) {
 	if ($n == 2) {/* 有两阶就有一步一阶和一步两阶两种方法 */
 		return(2);
 	} else { /* 每跨一步是一阶和两阶的可能相加 */
-		return(f($n-1)+f($n-2));
+		return(fun($n-1)+fun($n-2));
 	}
 }
