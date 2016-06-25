@@ -20,18 +20,26 @@
  +-----------------------------------------------------------------------------
  */
 
-$in = array(2,3,4,5,1,4,4,4);
 
-foreach ($in as $key => $value) {
-	for ($i=1; $i <= 5; $i++) { 
+$_votes01 = _votes01();
 
-		if ($in[$key] == $i) {
-			@$arr[$i] +=  1;
+// var_dump($_votes01);
+
+
+function _votes01() {
+	$in = array(2,3,4,5,1,4,4,4);
+
+	foreach ($in as $key => $value) {
+		for ($i=1; $i <= 5; $i++) { 
+
+			if ($in[$key] == $i) {
+				@$arr[$i] +=  1;
+			}
+
 		}
-
 	}
+	return $arr;
 }
 
-print_r($arr);
 
 
