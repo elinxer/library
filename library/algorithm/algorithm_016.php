@@ -27,7 +27,9 @@
  */
 
 $_rabbit_01 = _rabbit_01();
+$_rabbit_02 = _rabbit_02();
 
+_rabbit_03();
 var_dump($_rabbit_01);
 
 // 算法1
@@ -44,3 +46,23 @@ function _rabbit_01() {
 	return $arr;
 }
 
+function _rabbit_02() {
+	$a = 1; $b = 1;
+	for ($i=1; $i <= 4; $i++) { 
+		$c = $a + $b;
+		$a = $b + $c;
+		$b = $c + $a;
+		echo $a.'--'.$b.'--'.$c;
+		echo "<br>";
+	}
+}
+
+function _rabbit_03() {
+	$a = 1; $b = 1;
+	for ($i=1; $i <= 5; $i++) { 
+		$a = $a + $b;
+		$b = $a + $b;
+		echo $a . '--' . $b;
+		echo "<br>";
+	}
+}
