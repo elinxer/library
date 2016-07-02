@@ -199,3 +199,16 @@ git 放弃本地修改 强制更新
 git fetch --all
 git reset --hard origin/master
 git fetch 只是下载远程的库的内容，不做任何的合并 git reset 把HEAD指向刚刚下载的最新的版本
+
+##更改原仓库地址
+```
+
+git remote set-url origin URL
+
+- 以下命令可以不进行
+git remote set-branches [--add] <name> <branch>...
+git remote set-url [--push] <name> <newurl> [<oldurl>]
+git remote set-url --add <name> <newurl>
+git remote set-url --delete <name> <url>
+```
+
