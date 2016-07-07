@@ -1,0 +1,18 @@
+方法/步骤
+1
+ 在“httpd.conf”文件中查找：Include conf/extra/httpd-vhosts.conf，去掉前面的注释#。
+打开extra/httpd-vhosts.conf文件；在最后加入类似内容：（文件路径是自己安装程序的路径）
+<VirtualHost *:80>
+ DocumentRoot "D:/wamp/www/aaa"(这是你放程序的文件路径)
+ ServerName www.aaa.com   （这是自己定义的域名）
+</VirtualHost>
+wampserver配置多站点
+2
+找到这个文件最后添加：C:\Windows\System32\drivers\etc\hosts
+127.0.0.1   www.aaa.com   （这是自己定义的域名）
+wampserver配置多站点
+3
+保存，重启服务即可。在浏览器输入：www.aaa.com查看效果。
+END
+注意事项
+如果80端口被占用，请卸载。不然apache无法使用。
