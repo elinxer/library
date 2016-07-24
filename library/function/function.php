@@ -1,4 +1,37 @@
 <?php
+
+/**
+ * 把指定时间段切份 - N份
+ * -----------------------------------
+ * @param string $start 开始时间 2016-07-18 00:00:00
+ * @param string $end 结束时间 2016-07-18 23:59:59
+ * @param boolean $format 是否格式化返回日期
+ * @param int $nums 切分数目
+ * @return array 时间段数组
+ */
+function cut_up_time_part($start, $end="", $nums = 7, $format=true) {
+    $start = strtotime($start);
+    $end   = strtotime($end);
+    $parts = ($end - $start)/$nums;
+    $last  = ($end - $start)%$nums;
+    if ( $last > 0) {
+        $parts = ($end - $start - $last)/$nums;
+    }
+    for ($i=1; $i <= $nums; $i++) { 
+        $_end  = $start + $parts * $i;
+        $arr[] = array($start + $parts * ($i-1), $_end);
+    }
+    $len = count($arr)-1;
+    $arr[$len][1] = $arr[$len][1] + $last;
+    if ($format) {
+        foreach ($arr as $key => $value) {
+            $arr[$key][0] = date("Y-m-d H:i:s", $value[0]);
+            $arr[$key][1] = date("Y-m-d H:i:s", $value[1]);
+        }
+    }
+    return $arr;
+}
+
 /**
  * 邮箱验证
  * @param string $email 需要验证的邮箱
@@ -12,6 +45,7 @@ function verify_email($email="") {
         return true;
     }
 }
+
 /**
  * php对url解码和编码
  * @param string $url
@@ -26,6 +60,7 @@ function url_encode_decode($url="")
     $url = str_replace($a, $b, $url);
     return $url;
 }
+
 /**
  * 获取目录下所有文件，包括子目录
  * @param string $dir 目录地址
@@ -50,6 +85,7 @@ function get_all_files($path,&$files) {
         $files[] =  $path;
     }
 }
+
 /**
  * 获取当前页面完整URL地址
  */
@@ -108,6 +144,7 @@ function get_time_array($start, $end, $m_or_w = 'week') {
     $arrayr[] = array($new_end - $fullday * 86400 + 1, $end);
     return $array;
 }
+
 /**
  * 生成从开始月份到结束月份的月份数组
  * @param int $start 开始时间戳
@@ -314,6 +351,7 @@ function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
         return $keyc.str_replace('=', '', base64_encode($result));
     }
 }
+
 /**
  * 判断是否为手机访问
  * @return  boolean
@@ -530,6 +568,7 @@ function assoc_unique($arr, $key)
     rsort($arr); //rsort函数对数组进行排序
     return $arr;
 }
+
 /**
  * 重新初始化键值，从0开始
  * @param $array 输入数组
@@ -538,10 +577,11 @@ function assoc_unique($arr, $key)
 function array_rekey($array){
     $keys = array();
     for($i=0;$i<count($array);$i++){
-    $keys[$i] = $i;
+        $keys[$i] = $i;
     }
     return array_combine($keys, $array);
 }
+
 /**
  * 检测字符串是否由纯英文，纯中文，中英文混合组成
  * @param string $str
@@ -595,6 +635,7 @@ function create_noncestr( $length = 32 )
     }
     return $str;
 }
+
 /**
  * GET 方法
  * PHP获取远程json返回数据，需要开启CURL
@@ -665,16 +706,6 @@ function send_sms($mobile,$content) {
     }
 }
 
-/**
- * 快递100的查询
- * @param  $e_code 快递标识
- * @param  $num 快递单号
- * @return mixed
- */
-function get_express($e_code,$num){
-    $express = new \Org\Util\Express();
-    return $info = $express ->get_expressOp($e_code,$num);
-}
 
 /**
  * 随机生成数字字符串
@@ -738,7 +769,7 @@ function curl_request($url,$post='',$cookie='', $returnCookie=0){
 }
 
 /**
- * 获取Portal应用当前模板下的模板列表
+ * 获取应用当前模板下的模板列表
  * @return array
  */
 function get_topic_tpl_file_list(){
@@ -834,50 +865,6 @@ function get_distance($lat1, $lng1, $lat2, $lng2, $len_type = 1, $decimal = 2)
 }
 
 /**
- * 根据ip返回地址信息
- * @param $clientIP
- * @return string
- */
- function taobaoIP($clientIP){
-    $taobaoIP = 'http://ip.taobao.com/service/getIpInfo.php?ip='.$clientIP;
-    $IPinfo = json_decode(file_get_contents($taobaoIP));
-    $data['ip'] = $IPinfo->data->ip;
-    $data['region'] = $IPinfo->data->region;
-    $data['region_id'] = $IPinfo->data->region_id;
-    $data['city'] = $IPinfo->data->city;
-    $data['city_id'] = $IPinfo->data->city_id;
-    return $data;
-}
-
-/**
- * 先根据淘宝的定位获取当前的省的地区id，如果获取不了就用本地的获取省地区id，否则就默认广东
- * @return string
- */
-function  getLocationAddr(){
-    //利用淘宝地址接口获取当前ip在的信息
-    $currentTbAddr=taobaoIP(getIPaddress());
-    if($currentTbAddr['region_id']==''){
-        //利用本地的获取地址的方法
-        $ip = get_client_ip();
-        $Ip = new \Org\Net\IpLocation('UTFWry.dat'); // 实例化类 参数表示IP地址库文件
-        $currentAddr = $Ip->getlocation($ip);        // 获取某个IP地址所在的位置
-        if($currentAddr['country']!="局域网" && $currentAddr['country']!="本机地址"){
-            $areaname=substr($currentAddr['country'],0,6);
-            $condition['areaname'] = array('like',"%".$areaname."%");
-            $data_area=M('area')->where($condition)->field('id,areaname')->select();
-            if($data_area){
-                return $data_area[0]['id'];
-            }
-        }else{
-            //都找不到就默认是广东省
-            return '440000';
-        }
-    }else{
-        return $currentTbAddr['region_id'];
-    }
-}
-
-/**
  * 折扣计算
  * @param $original 原价
  * @param $current 现价
@@ -893,9 +880,10 @@ function count_discount($original, $current, $point=0) {
         $discount = 0;
     }
     if ( $discount <= 0 ) { $discount = 1; }
-    if ($discount >= 10) { $discount = 0; }
+    if ( $discount >= 10 ) { $discount = 0; }
     return $discount;
 }
+
 /**
  * 把返回的数据集转换成Tree
  * @access public
@@ -943,7 +931,7 @@ function list_to_tree($list, $pk='id',$pid = 'pid',$child = '_child',$root=0) {
 * asc正向排序 desc逆向排序 nat自然排序
 * @return array
 */
-function list_sort_by($list,$field, $sortby='asc') {
+function list_sort_by($list, $field, $sortby='asc') {
     if(is_array($list)){
         $refer = $resultSet = array();
         foreach ($list as $i => $data) {
@@ -995,6 +983,7 @@ function list_search($list,$condition) {
     }
     return $resultSet;
 }
+
 /**
  * 将list_to_tree的树还原成列表
  * @param  array $tree  原来的树
