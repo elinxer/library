@@ -1,6 +1,26 @@
 <?php
 
 /**
+ * 5行代码生成树
+ * 此方法由@Tonton 提供
+ * http://my.oschina.net/u/918697
+ * @date 2012-12-12 
+ */
+function genTree5($items) { 
+    // $items = array(
+    //     1 => array('id' => 1, 'pid' => 0, 'name' => '江西省'),
+    //     2 => array('id' => 2, 'pid' => 0, 'name' => '黑龙江省'),
+    //     3 => array('id' => 3, 'pid' => 1, 'name' => '南昌市'),
+    //     4 => array('id' => 4, 'pid' => 2, 'name' => '哈尔滨市'),
+    //     5 => array('id' => 5, 'pid' => 2, 'name' => '鸡西市'),
+    //     6 => array('id' => 6, 'pid' => 4, 'name' => '香坊区'),
+    // );
+    foreach ($items as $item) 
+        $items[$item['pid']]['son'][$item['id']] = &$items[$item['id']]; 
+    return isset($items[0]['son']) ? $items[0]['son'] : array(); 
+}
+
+/**
  * 把指定时间段切份 - N份
  * -----------------------------------
  * @param string $start 开始时间 2016-07-18 00:00:00

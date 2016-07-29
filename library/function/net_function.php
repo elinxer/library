@@ -2,6 +2,74 @@
 
 /**
  +-----------------------------------------------------------------------------
+ * 检查代理ip信息有效性
+ +-----------------------------------------------------------------------------
+ * @param string $proxy_ip [117.95.100.126:8998]
+ * @param int $times 执行检查次数
+ * @return array
+ * @author elinx <654753115@qq.com> 2016-07-29
+ +-----------------------------------------------------------------------------
+ */
+function check_proxy_ip_info($proxy_ip=false, $times=10) {
+    $header = array(
+        // "GET / HTTP/1.1",
+        // "HOST: www.baidu.com",
+        "accept: application/json",
+        "accept-encoding: gzip, deflate",
+        "accept-language: en-US,en;q=0.8",
+        "content-type: application/json",
+        "user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36",
+    );
+    $url = 'http://www.baidu.com/';
+    $result['succeed_times'] = 0; //成功次数
+    $result['defeat_times']  = 0; //失败次数
+    $result['total_spen']    = 0; //总用时
+    for ($i=0; $i < $times; $i++) { 
+        $s = microtime();
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url); //设置传输的url
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header); //发送http报头
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_ENCODING, 'gzip,deflate'); // 解码压缩文件
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); //不验证证SSL书
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false); //不验证SSL证书
+
+        if (@$proxy_ip != false) { //使用代理ip
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array (
+                'Client_Ip: '.mt_rand(0, 255).'.'.mt_rand(0, 255).'.'.mt_rand(0, 255).'.'.mt_rand(0, 255),
+            ));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array (
+                'X-Forwarded-For: '.mt_rand(0, 255).'.'.mt_rand(0, 255).'.'.mt_rand(0, 255).'.'.mt_rand(0, 255),
+            ));
+            curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+            curl_setopt($curl, CURLOPT_PROXY, $proxy_ip);
+        }
+
+        curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__).'/cookie.txt');
+        curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__).'/cookie.txt');
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30); // 设置超时限制防止死循环
+        // $response_header = curl_getinfo($curl); // 获取返回response报头
+        $content = curl_exec($curl);
+        if (strstr($content, '百度一下，你就知道')) {
+            $result['list'][$i]['status'] = 1;
+            $result['succeed_times'] += 1;
+        } else {
+            $result['list'][$i]['status'] = 0;
+            $result['defeat_times']  += 1;
+        }
+        $e = microtime();
+        $result['total_spen']          += abs($e-$s);
+        $result['list'][$i]['spen']    =  abs($e-$s);
+        $result['list'][$i]['content'] =  json_encode($content, true);
+        // $result['list'][$i]['response_header'] =  $response_header;
+    }
+    $result['precent'] = (number_format($result['succeed_times']/$times, 4)*100).'%';
+    $result['average_spen'] = number_format($result['total_spen']/$times, 4);
+    return $result;
+}
+
+/**
+ +-----------------------------------------------------------------------------
  * 保存指定路径的图片
  +-----------------------------------------------------------------------------
  * @param string $url 完整图片地址
