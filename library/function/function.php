@@ -1266,3 +1266,50 @@ function data_to_xml($data, $item='item', $id='id') {
     }
     return $xml;
 }
+
+/**
+ * 对输入字符串作数据库安全过滤处理
+ *
+ * @param $str
+ * @param int $type
+ * @return array|int|mixed|string
+ */
+function filter_str($str, $type = 1)
+{
+    if (is_array($str)) {
+        foreach ($str as $key => $val) {
+            $str[$key] = filter_str($val, $type);
+        }
+        return $str;
+    }
+    $result = '';
+    $str = trim($str);
+    switch ($type) {
+        //数字、字母、下划线、横线
+        case 1:
+            if (preg_match('#^(\\w|-)*$#i', $str)) {
+                $result = $str;
+            }
+            break;
+        //数字
+        case 2:
+            if (preg_match('#^(\\d)*$#i', $str)) {
+                $result = $str;
+            }
+            $result = (int)$result;
+            break;
+        //过滤掉常用sql注入,适用于富文本基本过滤
+        case 3:
+            $result = str_ireplace(array('#', 'CONCAT', 'UNION', 'select'), '', addslashes($str));
+            break;
+        //过滤掉常用sql注入和xss注入,同时会过滤掉空格,最严格过滤
+        case 4:
+            $result = str_ireplace(array('#', ' ', 'CONCAT', 'UNION', 'select'), '', addslashes(htmlspecialchars(strip_tags($str), ENT_QUOTES)));
+            break;
+        //过滤掉常用sql注入和xss注入,适用于整个input值过滤,但input里面不能是json，否则解不了
+        case 5:
+            $result = str_ireplace(array('#', 'CONCAT', 'UNION', 'select'), '', addslashes(htmlspecialchars(strip_tags($str), ENT_QUOTES)));
+            break;
+    }
+    return $result;
+}
