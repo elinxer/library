@@ -1,0 +1,8 @@
+version: '2.1'
+services:
+    laravel_docker: 
+      image: laraedit/laraedit
+      ports: 
+        - "8005:80"
+      volumes:
+        - .:/var/www/html/app

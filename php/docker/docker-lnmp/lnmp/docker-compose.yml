@@ -1,0 +1,67 @@
+version : '2.1'
+services :
+   mysql :
+     build :
+        context : ./mysql
+        dockerfile : dockerfile
+     ports :
+        - "3306:3306"
+     volumes :
+        - ./mysql/data:/var/lib/mysql
+     #初始密码
+     environment :
+        - MYSQL_ROOT_PASSWORD=123456
+     container_name : mysql
+     restart : always   
+   php7 :
+     build :
+        context : ./php7
+        dockerfile : dockerfile
+     ports :
+        - "9000:9000"
+     volumes :
+        - /www:/usr/local/nginx/html
+        - ./php7/conf/php.ini:/usr/local/php7/lib/php.ini:ro
+     container_name : php7
+     links :
+        - mysql
+     restart : always
+   nginx : 
+     build :
+        context : ./nginx
+        dockerfile : dockerfile
+     ports :
+        - "80:80"
+        - "443:443"
+     volumes :
+        - ./nginx/logs:/usr/local/nginx/logs
+        - /www:/usr/local/nginx/html
+        - ./nginx/conf/nginx.conf:/usr/local/nginx/conf/nginx.conf:ro
+        - ./nginx/conf/vhost:/usr/local/nginx/conf/vhost:ro
+     container_name : nginx
+     links :
+        - php7
+     restart : always
+   phpmyadmin :
+     image : phpmyadmin/phpmyadmin
+     container_name : myadmin
+     volumes:
+        - /sessions
+     ports :
+        - 8080:80
+     environment :
+        - PMA_ARBITRARY=1
+        - TESTSUITE_PASSWORD=123456
+     depends_on :
+        - mysql
+     restart: always
+   redis :
+     image : redis
+     container_name : redis
+     volumes :
+        - ./redis/data:/data
+        - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+     ports :
+        - 6379:6379
+     command : redis-server /usr/local/etc/redis/redis.conf
+     restart: always
