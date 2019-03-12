@@ -4,7 +4,10 @@
  * 5行代码生成树
  * 此方法由@Tonton 提供
  * http://my.oschina.net/u/918697
- * @date 2012-12-12 
+ *
+ * @date 2012-12-12
+ * @param $items
+ * @return array
  */
 function genTree5($items) { 
     // $items = array(
@@ -68,9 +71,12 @@ function verify_email($email="") {
 
 /**
  * php对url解码和编码
+ *
+ * $url="ftp://ud03:password@s.jb51.net/中文/中文.rar";
+ * echo url_encode_decode($url);
+ *
  * @param string $url
- $url="ftp://ud03:password@s.jb51.net/中文/中文.rar";
- echo parseurl($url);
+ * @return mixed|string
  */
 function url_encode_decode($url="")
 {
@@ -96,7 +102,7 @@ function get_all_files($path,&$files) {
         $dp = dir($path);
         while ($file = $dp ->read()){
             if($file !="." && $file !=".."){
-                get_allfiles($path."/".$file, $files);
+                get_all_files($path."/".$file, $files);
             }
         }
         $dp ->close();
@@ -119,9 +125,9 @@ function get_all_files($path,&$files) {
 
 /**
  * 返回时间段星期数组
- * @param $start 开始时间 2016-01-10
- * @param $end 结束时间 2016-01-28
- * @param $m_or_w 模式 week / month
+ * @param string $start 开始时间 2016-01-10
+ * @param string $end 结束时间 2016-01-28
+ * @param string $m_or_w 模式 week / month
  * @return array
  */
 function get_time_array($start, $end, $m_or_w = 'week') {
@@ -167,9 +173,11 @@ function get_time_array($start, $end, $m_or_w = 'week') {
 
 /**
  * 生成从开始月份到结束月份的月份数组
+ *
  * @param int $start 开始时间戳
  * @param int $end 结束时间戳
- * @param int strtotime 时间格式
+ * @param int $strtotime 时间格式
+ * @return array|string
  */
 function get_month_list_bytime($start, $end, $strtotime=0){
     if(!is_numeric($start)||!is_numeric($end)||($end<=$start)) return '';
@@ -194,7 +202,8 @@ function get_month_list_bytime($start, $end, $strtotime=0){
 
 /**
  * 删除文件目录
- * @param $dir 删除目录路径
+ *
+ * @param string $dir 删除目录路径
  * @return boolean
  */
 function del_dir($dir) {
@@ -221,6 +230,7 @@ function del_dir($dir) {
 
 /**
  * 取文件最后$n行，此方法高效
+ *
  * @param string $filename 文件路径
  * @param int $n 最后几行
  * @return mixed false表示有错误，成功则返回数组
@@ -251,6 +261,7 @@ function fileLast_lines($filename,$n){
 
 /**
  * 二维数组按键值升降排序
+ *
  * @param array $arr 排序二维数组
  * @param string $keys 排序键名
  * @param string $type 升降asc/desc
@@ -275,11 +286,11 @@ function array_sort($arr, $keys, $type = 'asc'){
 
 /**
  * 存储单位转换，字节转KB和MB和GB
- * @param $unit 字节单位
- * @return $result string
+ *
+ * @param int $unit 字节单位
+ * @return string
  */
 function storage_unit($unit) {
-    $result = '';
     $ext = '';
     if ($unit < 1024) {
         $result = $unit;
@@ -303,15 +314,17 @@ function storage_unit($unit) {
 
 /**
  * 数据加密 / 解密
- * @param $string： 明文 或 密文
- * @param $operation：DECODE表示解密,其它表示加密
- * @param $key： 密匙
- * @param $expiry：密文有效期
- * @return string 返回密文
+ *
  * $str = '3412eafrmlcjS8g75DgHXRlehynzjp0Yw40fPYCl';
  * $key = 'walle';
  * $act = 'DECODE';
  * echo authcode($str,$act,$key,100);
+ *
+ * @param string $string  明文 或 密文
+ * @param string $operation DECODE表示解密,其它表示加密
+ * @param string $key  密匙
+ * @param int $expiry 密文有效期
+ * @return string 返回密文
  */
 function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
     // 动态密匙长度，相同的明文会生成不同密文就是依靠动态密匙
@@ -398,8 +411,9 @@ function tea_is_mobile() {
 
 /**
  * 检查字符串是否是UTF8编码
+ *
  * @param string $string 字符串
- * @return Boolean
+ * @return bool
  */
 function is_utf8($string) {
     return preg_match('%^(?:
@@ -416,7 +430,8 @@ function is_utf8($string) {
 
 /**
  * 产生随机字串， 默认长度6位 字母和数字混合
- * @param string $len 长度
+ *
+ * @param int $len 长度
  * @param string $type 字串类型 0 字母 1 数字 其它 混合
  * @param string $addChars 额外字符
  * @return string
@@ -461,9 +476,10 @@ function rand_string($len=6, $type='', $addChars='') {
 
 /**
  * 代码加亮
+ *
  * @param String  $str 要高亮显示的字符串 或者 文件名
  * @param Boolean $show 是否输出
- * @return String
+ * @return mixed
  */
 function highlight_code($str, $show = false) {
     if(file_exists($str)) {
@@ -507,13 +523,15 @@ function highlight_code($str, $show = false) {
     }else {
         return $result;
     }
+    return $result;
 }
 
 /**
  * 自动转换字符集 支持数组转换
- * @param $fContents 要转换的文本或数组
- * @param $from 原编码
- * @param $to 要转换为编码
+ *
+ * @param string|array $fContents 要转换的文本或数组
+ * @param string $from 原编码
+ * @param string $to 要转换为编码
  * @return mixed
  */
 function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
@@ -546,20 +564,24 @@ function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
 
 /**
  * 查询二维数值是否存在某个值
- * return array or false
+ *
+ * @param $value
+ * @param $array
+ * @return mixed
  */
-function search_in_array($value, $array) {
-    foreach($array as $item) {
-        if(!is_array($item)) {
+function search_in_array($value, $array)
+{
+    foreach ($array as $item) {
+        if (!is_array($item)) {
             if ($item == $value) {
                 return $item;
             } else {
                 continue;
             }
         }
-        if(in_array($value, $item)) {
+        if (in_array($value, $item)) {
             return $item;
-        } else if(deep_in_array($value, $item)) {
+        } else if (search_in_array($value, $item)) {
             return $item;
         }
     }
@@ -568,9 +590,10 @@ function search_in_array($value, $array) {
 
 /**
  * 二维数组去除重复元素- 基于一键名不重复
- * @param $arr 处理二维数组
- * @param $key 基于键名
- * @return $arr 数组
+ *
+ * @param array $arr 处理二维数组
+ * @param string $key 基于键名
+ * @return array
  */
 function assoc_unique($arr, $key)
 {
@@ -591,7 +614,8 @@ function assoc_unique($arr, $key)
 
 /**
  * 重新初始化键值，从0开始
- * @param $array 输入数组
+ *
+ * @param array $array 输入数组
  * @return array
  */
 function array_rekey($array){
@@ -604,6 +628,7 @@ function array_rekey($array){
 
 /**
  * 检测字符串是否由纯英文，纯中文，中英文混合组成
+ *
  * @param string $str
  * @return mixed 1:纯英文;2:纯中文;3:中英文混合
  */
@@ -624,7 +649,8 @@ function check_str($str = ''){
 
 /**
  * 匹配是否为URL
- * @param $s 输入字符串
+ *
+ * @param string 输入字符串
  * @return boolean
  */
 function is_url($s)
@@ -643,7 +669,8 @@ function is_url($s)
 
 /**
  * 产生随机字符串，不长于32位
- * @param $length 生成字符串长度
+ *
+ * @param int $length 生成字符串长度
  * @return string
  */
 function create_noncestr( $length = 32 )
@@ -659,7 +686,8 @@ function create_noncestr( $length = 32 )
 /**
  * GET 方法
  * PHP获取远程json返回数据，需要开启CURL
- * @param $url 远程路径地址
+ *
+ * @param string $url 远程路径地址
  * @return array 解释过的json数组
  */
 function get_curl_json($url){
@@ -678,69 +706,74 @@ function get_curl_json($url){
 
 /**
  * 邮件发送函数
- * @param $to 发给的人
- * @param $title 邮件标题（主题）
+ *
+ * @param string $to 发给的人
+ * @param string $title 邮件标题（主题）
  * @param $message 邮件内容
+ * @return mixed
  */
 function send_mail($to, $title, $message) {
-    // 导入Email类
-    Vendor('PHPMailer.PHPMailerAutoload');
-    $mail= new PHPMailer();
-    // 设置PHPMailer使用SMTP服务器发送Email
-    $mail->IsSMTP();
-    $mail->CharSet = C('TEA_MAIL_CHARSET'); // 设置邮件的字符编码，若不指定，则为'UTF-8'
-    $mail->AddAddress($to);                 // 添加收件人地址，可以多次使用来添加多个收件人
-    $mail->IsHTML(true);                    // 支持html格式内容
-    $mail->Body = $message;                 // 设置邮件正文
-    $mail->From = C('TEA_MAIL_ADDRESS');    // 设置邮件头的From字段。
-    $mail->FromName = C('TEA_MAIL_SENDER'); // 设置发件人名字
-    $mail->Subject=$title;                  // 设置邮件标题
-    $mail->Host = C('TEA_MAIL_SMTP');       // 设置SMTP服务器。
-    $mail->SMTPAuth = C('TEA_MAIL_SMTPAUTH'); //启用smtp认证
-    // 设置用户名和密码。
-    $mail->Username = C('TEA_MAIL_LOGINNAME');
-    $mail->Password = C('TEA_MAIL_PASSWORD');
-    // 发送邮件。
-    return($mail->Send());
+//    // 导入Email类
+//    Vendor('PHPMailer.PHPMailerAutoload');
+//    $mail= new PHPMailer();
+//    // 设置PHPMailer使用SMTP服务器发送Email
+//    $mail->IsSMTP();
+//    $mail->CharSet = C('TEA_MAIL_CHARSET'); // 设置邮件的字符编码，若不指定，则为'UTF-8'
+//    $mail->AddAddress($to);                 // 添加收件人地址，可以多次使用来添加多个收件人
+//    $mail->IsHTML(true);                    // 支持html格式内容
+//    $mail->Body = $message;                 // 设置邮件正文
+//    $mail->From = C('TEA_MAIL_ADDRESS');    // 设置邮件头的From字段。
+//    $mail->FromName = C('TEA_MAIL_SENDER'); // 设置发件人名字
+//    $mail->Subject=$title;                  // 设置邮件标题
+//    $mail->Host = C('TEA_MAIL_SMTP');       // 设置SMTP服务器。
+//    $mail->SMTPAuth = C('TEA_MAIL_SMTPAUTH'); //启用smtp认证
+//    // 设置用户名和密码。
+//    $mail->Username = C('TEA_MAIL_LOGINNAME');
+//    $mail->Password = C('TEA_MAIL_PASSWORD');
+//    // 发送邮件。
+//    return($mail->Send());
+
+    return 0;
 }
 
 /**
  * 发送短信
- * @param  $mobile 手机号码
- * @param  $content 短信内容
- * @return string 返回信息
+ *
+ * @param string  手机号码
+ * @param string 短信内容
+ * @return string
  */
-function send_sms($mobile,$content) {
-    $mobile_code = GetRandStr ( 6 );
-    $_SESSION ['mobile_code'] = $mobile_code;
-    if(!isset($content) || empty($content)){
-        $content = "您的验证码是：".$mobile_code."。请不要把验证码泄露给其他人。";
-    }
-    import("Org.Util.SendSms");
-    $result=Sms::send($mobile, $content);
-    if($result=='发送成功'){
-        $_SESSION ['mobile_code'] = $mobile_code;
-        return '2';
-    }else{
-        return $result;
-    }
+function send_sms($mobile, $content)
+{
+//    $mobile_code = GetRandStr ( 6 );
+//    $_SESSION ['mobile_code'] = $mobile_code;
+//    if(!isset($content) || empty($content)){
+//        $content = "您的验证码是：".$mobile_code."。请不要把验证码泄露给其他人。";
+//    }
+//    import("Org.Util.SendSms");
+//    $result=Sms::send($mobile, $content);
+//    if($result=='发送成功'){
+//        $_SESSION ['mobile_code'] = $mobile_code;
+//        return '2';
+//    }else{
+//        return $result;
+//    }
+    return '';
 }
-
 
 /**
  * 随机生成数字字符串
- * @param  $len 生成的长度
+ * @param int $len 生成的长度
  * @return string
  */
 function get_rand_str($len)
 {
-    $chars = array("0", "1", "2","3", "4", "5", "6", "7", "8", "9");
+    $chars = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
     $charsLen = count($chars) - 1;
     shuffle($chars);
     $output = "";
-    for ($i=0; $i<$len; $i++)
-    {
-    $output .= $chars[mt_rand(0, $charsLen)];
+    for ($i = 0; $i < $len; $i++) {
+        $output .= $chars[mt_rand(0, $charsLen)];
     }
     return $output;
 }
@@ -748,44 +781,54 @@ function get_rand_str($len)
 /**
  * 生成随机的订单号
  */
-function create_order_sn(){
+function create_order_sn()
+{
     $firstNum = "1";
-    $order_sn = $firstNum.date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT).GetRandStr(1);
+    $order_sn = $firstNum . date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT) . get_rand_str(1);
     return $order_sn;
 }
 
-//参数1：访问的URL，参数2：post数据(不填则为GET)，参数3：提交的$cookies,参数4：是否返回$cookies
-function curl_request($url,$post='',$cookie='', $returnCookie=0){
-      $curl = curl_init();
-      curl_setopt($curl, CURLOPT_URL, $url);
-      curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
-      curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-      curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
-      curl_setopt($curl, CURLOPT_REFERER, "http://XXX");
-      if($post) {
-         curl_setopt($curl, CURLOPT_POST, 1);
-         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
-       }
-      if($cookie) {
-         curl_setopt($curl, CURLOPT_COOKIE, $cookie);
-       }
-      curl_setopt($curl, CURLOPT_HEADER, $returnCookie);
-      curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-      $data = curl_exec($curl);
-      if (curl_errno($curl)) {
-          return curl_error($curl);
-      }
-      curl_close($curl);
-      if($returnCookie){
-          list($header, $body) = explode("\r\n\r\n", $data, 2);
-          preg_match_all("/Set\-Cookie:([^;]*);/", $header, $matches);
-          $info['cookie']  = substr($matches[1][0], 1);
-          $info['content'] = $body;
-          return $info;
-      }else{
-          return $data;
-      }
+/**
+ * 参数1：访问的URL，参数2：post数据(不填则为GET)，参数3：提交的$cookies,参数4：是否返回$cookies
+ *
+ * @param $url
+ * @param string $post
+ * @param string $cookie
+ * @param int $returnCookie
+ * @return bool|string
+ */
+function curl_request($url, $post = '', $cookie = '', $returnCookie = 0)
+{
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
+    curl_setopt($curl, CURLOPT_REFERER, "http://XXX");
+    if ($post) {
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
+    }
+    if ($cookie) {
+        curl_setopt($curl, CURLOPT_COOKIE, $cookie);
+    }
+    curl_setopt($curl, CURLOPT_HEADER, $returnCookie);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    $data = curl_exec($curl);
+    if (curl_errno($curl)) {
+        return curl_error($curl);
+    }
+    curl_close($curl);
+    if ($returnCookie) {
+        list($header, $body) = explode("\r\n\r\n", $data, 2);
+        preg_match_all("/Set\-Cookie:([^;]*);/", $header, $matches);
+        $info['cookie'] = substr($matches[1][0], 1);
+        $info['content'] = $body;
+        return $info;
+    } else {
+        return $data;
+    }
 }
 
 /**
@@ -793,32 +836,34 @@ function curl_request($url,$post='',$cookie='', $returnCookie=0){
  * @return array
  */
 function get_topic_tpl_file_list(){
-    $template_path="Application/Home/View/Temp/";
-    $files=sp_scan_dir($template_path."*");
-    $tpl_files=array();
-    foreach ($files as $f){
-        if($f!="." || $f!=".."){
-            if(is_file($template_path.$f)){
-                $suffix=".html";    //C("TMPL_TEMPLATE_SUFFIX")
-                $result=preg_match("/$suffix$/", $f);
-                if($result){
-                    $tpl=str_replace($suffix, "", $f);
-                    $tpl_files[$tpl]=$tpl;
-                }else if(preg_match("/\.php$/", $f)){
-                    $tpl=str_replace($suffix, "", $f);
-                    $tpl_files[$tpl]=$tpl;
-                }
-            }
-        }
-    }
-    return $tpl_files;
+//    $template_path="Application/Home/View/Temp/";
+//    $files=sp_scan_dir($template_path."*");
+//    $tpl_files=array();
+//    foreach ($files as $f){
+//        if($f!="." || $f!=".."){
+//            if(is_file($template_path.$f)){
+//                $suffix=".html";    //C("TMPL_TEMPLATE_SUFFIX")
+//                $result=preg_match("/$suffix$/", $f);
+//                if($result){
+//                    $tpl=str_replace($suffix, "", $f);
+//                    $tpl_files[$tpl]=$tpl;
+//                }else if(preg_match("/\.php$/", $f)){
+//                    $tpl=str_replace($suffix, "", $f);
+//                    $tpl_files[$tpl]=$tpl;
+//                }
+//            }
+//        }
+//    }
+//    return $tpl_files;
+
+    return [];
 }
 
 /**
  * 单位转为千克的装法
- * @param $many 多重
+ * @param int $many 多重
  * @param $type 1：克（g）2：千克（kg）3：盎司（oz）4：磅（lb）
- * @return 返回以千克为单位的
+ * @return mixed 返回以千克为单位的
  */
 function change_to_kg($many, $type){
     if($type == 1){
@@ -834,6 +879,7 @@ function change_to_kg($many, $type){
 
 /**
  * 字符串截取，支持中文和其他编码
+ *
  * @param string $str 需要转换的字符串
  * @param string $start 开始位置
  * @param string $length 截取长度
@@ -841,7 +887,7 @@ function change_to_kg($many, $type){
  * @param string $suffix 截断显示字符
  * @return string
  */
-function msubstr($str, $start=0, $length, $charset="utf-8", $suffix=true) {
+function msubstr($str, $start=0, $length = 0, $charset="utf-8", $suffix=true) {
     if(function_exists("mb_substr"))
         $slice = mb_substr($str, $start, $length, $charset);
     elseif(function_exists('iconv_substr')) {
@@ -906,21 +952,25 @@ function count_discount($original, $current, $point=0) {
 
 /**
  * 把返回的数据集转换成Tree
- * @access public
- * @param array $list 要转换的数据集
+ *
+ * $list = array(
+ * array('id'=>1, 'pid'=>0, 'title'=>'菜单', 'sort'=>0),
+ * array('id'=>2, 'pid'=>1, 'title'=>'菜单列表1', 'sort'=>0),
+ * array('id'=>3, 'pid'=>1, 'title'=>'菜单列表2', 'sort'=>1),
+ * );
+ *
+ * @param $list 要转换的数据集
+ * @param string $pk
  * @param string $pid parent标记字段
- * @param string $level level标记字段
- $list = array(
-  array('id'=>1, 'pid'=>0, 'title'=>'菜单', 'sort'=>0),
-  array('id'=>2, 'pid'=>1, 'title'=>'菜单列表1', 'sort'=>0),
-  array('id'=>3, 'pid'=>1, 'title'=>'菜单列表2', 'sort'=>1),
- );
+ * @param string $child
+ * @param int $root
  * @return array
  */
-function list_to_tree($list, $pk='id',$pid = 'pid',$child = '_child',$root=0) {
+function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
+{
     // 创建Tree
     $tree = array();
-    if(is_array($list)) {
+    if (is_array($list)) {
         // 创建基于主键的数组引用
         $refer = array();
         foreach ($list as $key => $data) {
@@ -931,7 +981,7 @@ function list_to_tree($list, $pk='id',$pid = 'pid',$child = '_child',$root=0) {
             $parentId = $data[$pid];
             if ($root == $parentId) {
                 $tree[] =& $list[$key];
-            }else{
+            } else {
                 if (isset($refer[$parentId])) {
                     $parent =& $refer[$parentId];
                     $parent[$child][] =& $list[$key];
@@ -947,9 +997,9 @@ function list_to_tree($list, $pk='id',$pid = 'pid',$child = '_child',$root=0) {
 * @access public
 * @param array $list 查询结果
 * @param string $field 排序的字段名
-* @param array $sortby 排序类型
+* @param string $sortby 排序类型
 * asc正向排序 desc逆向排序 nat自然排序
-* @return array
+* @return array|bool
 */
 function list_sort_by($list, $field, $sortby='asc') {
     if(is_array($list)){
