@@ -6,6 +6,7 @@
 
 
 http://www.testclass.net/locust/help
+https://www.cnblogs.com/imyalost/p/9758189.html
 
 #### 启动命令
 
