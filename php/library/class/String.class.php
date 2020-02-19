@@ -259,4 +259,34 @@ class String {
             return $string;
         }
     }
+
+    /**
+     * 计算 UTF-8 字符串长度 不区分中英文，都作一个长度
+     *
+     * @param string $str
+     * @return int
+     */
+    public function strLenUtf8($str)
+    {
+        $i = 0;
+        $count = 0;
+        $len = strlen($str);
+        while ($i < $len) {
+            $chr = ord($str[$i]);
+            $count++;
+            $i++;
+            if ($i >= $len) {
+                break;
+            }
+            if ($chr & 0x80) {
+                $chr <<= 1;
+                while ($chr & 0x80) {
+                    $i++;
+                    $chr <<= 1;
+                }
+            }
+        }
+        return $count;
+    }
+
 }
