@@ -288,3 +288,223 @@ class PDO implements IDatabase
 
 #### 策略模式
 
+策略模式，将一组特定的行为和算法封装成类，以适应某些特定的上下文环境。
+eg：假如有一个电商网站系统，针对男性女性用户要各自跳转到不同的商品类目，并且所有的广告位展示不同的广告。在传统的代码中，都是在系统中加入各种if else的判断，硬编码的方式。如果有一天增加了一种用户，就需要改写代码。使用策略模式，如果新增加一种用户类型，只需要增加一种策略就可以。其他所有的地方只需要使用不同的策略就可以。
+首先声明策略的接口文件，约定了策略的包含的行为。然后，定义各个具体的策略实现类。
+
+```
+UserStrategy.php
+<?php
+/*
+ * 声明策略文件的接口，约定策略包含的行为。
+ */
+interface UserStrategy
+{
+    function showAd();
+    function showCategory();
+}
+
+FemaleUser.php
+<?php
+require_once 'Loader.php';
+class FemaleUser implements UserStrategy
+{
+    function showAd(){
+        echo "2016冬季女装";
+    }
+    function showCategory(){
+        echo "女装";
+    }
+}
+
+MaleUser.php
+<?php
+require_once 'Loader.php';
+class MaleUser implements UserStrategy
+{
+    function showAd(){
+        echo "IPhone6s";
+    }
+    function showCategory(){
+        echo "电子产品";
+    }
+}
+
+Page.php//执行文件
+<?php
+require_once 'Loader.php';
+class Page
+{
+    protected $strategy;
+    function index(){
+        echo "AD";
+        $this->strategy->showAd();
+        echo "<br>";
+        echo "Category";
+        $this->strategy->showCategory();
+        echo "<br>";
+    }
+    function setStrategy(UserStrategy $strategy){
+        $this->strategy=$strategy;
+    }
+}
+
+$page = new Page();
+if(isset($_GET['male'])){
+    $strategy = new MaleUser();
+}else {
+    $strategy = new FemaleUser();
+}
+$page->setStrategy($strategy);
+$page->index();
+
+```
+
+策略模式与适配器模式非常相近
+通过以上方式，可以发现，在不同用户登录时显示不同的内容，但是解决了在显示时的硬编码的问题。如果要增加一种策略，只需要增加一种策略实现类，然后在入口文件中执行判断，传入这个类即可。实现了解耦。
+实现依赖倒置和控制反转 （有待理解）
+通过接口的方式，使得类和类之间不直接依赖。在使用该类的时候，才动态的传入该接口的一个实现类。如果要替换某个类，只需要提供一个实现了该接口的实现类，通过修改一行代码即可完成替换。
+
+#### 观察者模式
+
+> 1：观察者模式(Observer)，当一个对象状态发生变化时，依赖它的对象全部会收到通知，并自动更新。
+>
+> 2：场景:一个事件发生后，要执行一连串更新操作。传统的编程方式，就是在事件的代码之后直接加入处理的逻辑。当更新的逻辑增多之后，代码会变得难以维护。
+> 这种方式是耦合的，侵入式的，增加新的逻辑需要修改事件的主体代码。
+>
+>3：观察者模式实现了低耦合，非侵入式的通知与更新机制。
+
+定义一个事件触发抽象类。
+
+```
+EventGenerator.php
+<?php
+require_once 'Loader.php';
+abstract class EventGenerator{
+    private $observers = array();
+    function addObserver(Observer $observer){
+        $this->observers[]=$observer;
+    }
+    function notify(){
+        foreach ($this->observers as $observer){
+            $observer->update();
+        }
+    }
+}
+
+Observer.php
+<?php
+require_once 'Loader.php';
+interface Observer{
+    function update();//这里就是在事件发生后要执行的逻辑
+}
+
+
+<?php
+//一个实现了EventGenerator抽象类的类，用于具体定义某个发生的事件
+require 'Loader.php';
+class Event extends EventGenerator{
+    function triger(){
+        echo "Event<br>";
+    }
+}
+class Observer1 implements Observer{
+    function update(){
+        echo "逻辑1<br>";
+    }
+}
+class Observer2 implements Observer{
+    function update(){
+        echo "逻辑2<br>";
+    }
+}
+$event = new Event();
+$event->addObserver(new Observer1());
+$event->addObserver(new Observer2());
+$event->triger();
+$event->notify();
+
+```
+
+当某个事件发生后，需要执行的逻辑增多时，可以以松耦合的方式去增删逻辑。也就是代码中的红色部分，只需要定义一个实现了观察者接口的类，实现复杂的逻辑，然后在红色的部分加上一行代码即可。这样实现了低耦合。
+
+
+#### 原型模式
+
+原型模式（对象克隆以避免创建对象时的消耗）
+1：与工厂模式类似，都是用来创建对象。
+2：与工厂模式的实现不同，原型模式是先创建好一个原型对象，然后通过clone原型对象来创建新的对象。这样就免去了类创建时重复的初始化操作。
+3：原型模式适用于大对象的创建，创建一个大对象需要很大的开销，如果每次new就会消耗很大，原型模式仅需要内存拷贝即可。
+
+```
+Canvas.php
+<?php
+require_once 'Loader.php';
+class Canvas{
+private $data;
+function init($width = 20, $height = 10)
+    {
+        $data = array();
+        for($i = 0; $i < $height; $i++)
+        {
+            for($j = 0; $j < $width; $j++)
+            {
+                $data[$i][$j] = '*';
+            }
+        }
+        $this->data = $data;
+    }
+function rect($x1, $y1, $x2, $y2)
+    {
+        foreach($this->data as $k1 => $line)
+        {
+            if ($x1 > $k1 or $x2 < $k1) continue;
+           foreach($line as $k2 => $char)
+            {
+              if ($y1>$k2 or $y2<$k2) continue;
+                $this->data[$k1][$k2] = '#';
+            }
+        }
+    }
+
+    function draw(){
+        foreach ($this->data as $line){
+            foreach ($line as $char){
+                echo $char;
+            }
+            echo "<br>;";
+        }
+    }
+}
+
+Index.php
+<?php
+require 'Loader.php';
+$c = new Canvas();
+$c->init();
+/ $canvas1 = new Canvas();
+// $canvas1->init();
+$canvas1 = clone $c;//通过克隆，可以省去init()方法，这个方法循环两百次
+//去产生一个数组。当项目中需要产生很多的这样的对象时，就会new很多的对象，那样
+//是非常消耗性能的。
+$canvas1->rect(2, 2, 8, 8);
+$canvas1->draw();
+echo "-----------------------------------------<br>";
+// $canvas2 = new Canvas();
+// $canvas2->init();
+$canvas2 = clone $c;
+$canvas2->rect(1, 4, 8, 8);
+$canvas2->draw();
+
+```
+
+### 装饰器模式
+
+> 1：装饰器模式，可以动态的添加修改类的功能
+>
+> 2：一个类提供了一项功能，如果要在修改并添加额外的功能，传统的编程模式，需要写一个子类继承它，并重写实现类的方法
+>
+> 3：使用装饰器模式，仅需要在运行时添加一个装饰器对象即可实现，可以实现最大额灵活性。
+
+转载自： https://blog.csdn.net/flitrue/article/details/52614599
+@date 2020-02-22
