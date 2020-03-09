@@ -207,7 +207,7 @@ class requests
      * 
      * @param mixed $name    cookie名称
      * @param string $domain 不传则取全局cookie，就是手动set_cookie的cookie
-     * @return void
+     * @return mixed
      * @author seatle <seatle@foxmail.com> 
      * @created time :2017-08-03 18:06
      */
@@ -225,9 +225,9 @@ class requests
      * 获取Cookie数组
      * 
      * @param string $domain 不传则取全局cookie，就是手动set_cookie的cookie
-     * @return void
-     * @author seatle <seatle@foxmail.com> 
+     * @author seatle <seatle@foxmail.com>
      * @created time :2017-08-03 18:06
+     * @return mixed
      */
     public static function get_cookies($domain = '')
     {
@@ -572,6 +572,7 @@ class requests
      * @param array $fields
      * @param bool $allow_redirects
      * @param null $cert
+     * @return mixed
      */
     public static function get($url, $fields = array(), $allow_redirects = true, $cert = NULL)
     {
@@ -644,7 +645,6 @@ class requests
      * @param array $fields     表单字段
      * @param array $files      上传文件
      * @param mixed $cert       CA证书
-     * @return void
      * @author seatle <seatle@foxmail.com>
      * @created time :2017-08-03 18:06
      * @return bool|mixed
