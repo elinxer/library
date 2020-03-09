@@ -9,9 +9,23 @@ use \phpspider\core\selector;
 
 $request = requests::get('http://www.mafengwo.cn/mdd/ajax_photolist.php?act=getPoiPhotoList&poiid=8789817&page=1');
 
-$selector = selector::select($request, '//li/a/img/@src');
-var_dump($selector);
+$images = selector::select($request, '//li/a/img/@src');
+var_dump($images);
 
+foreach ($images as $image) {
+
+    $pathinfo = pathinfo($url);
+    $fileext = $pathinfo['extension'];
+    if (strtolower($fileext) == 'jpeg') {
+        $fileext = 'jpg';
+    }
+    // 以纳秒为单位生成随机数
+    $filename = uniqid() . "." . $fileext;
+    // 在data目录下生成图片
+    $filepath = __DIR__ . "/images/{$filename}";
+    // 用系统自带的下载器wget下载
+    exec("wget -q {$url} -O {$filepath}");
+}
 
 /*
 
