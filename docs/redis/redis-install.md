@@ -62,12 +62,11 @@ Redis编译搭建，采用最新版本编译安装，系统版本centos7.2+
         - 进入 config 目录。`cd config`
 
 
-
 ---
 
 redis编译安装完成
 
-#### redis 常用配置
+#### redis 常用配置+命令
 
 
 修改可以远程访问： ` bind 0.0.0.0 `
@@ -76,3 +75,18 @@ redis编译安装完成
 
 守护进程启动： `daemonize yes`
 
+
+**启动Redis**
+
+```
+# 命令+指定配置
+/root/redis-5.0.8/src/redis-server /root/redis-5.0.8/config/redis-cluster-7000.conf
+```
+
+**进入Redis命令行**
+
+登录Redis并使用密码`-a`
+
+```
+redis-cli -h xxxx.xx.xx.xx -p 6739 -a
+```

@@ -1,10 +1,7 @@
-# Redis cluster 集群扩容
+# Redis Cluster 集群扩容
 
-https://blog.51cto.com/phpme/2447995
-
-https://blog.csdn.net/iteen/article/details/102718048
-
-https://redis.io/topics/cluster-tutorial
+>本文基于：【Redis Cluster 集群】
+>
 
 新增两个节点，一主一副
 
@@ -123,3 +120,11 @@ cluster replicate ce91c6305206b7149efabeef46246cef9642fd65
 删除主节点的另一种方法是在其从节点之一上对其执行手动故障转移，并在该节点成为新主节点的从节点之后将其删除。显然，这在您要减少群集中的主节点的实际数量时无济于事，在这种情况下，需要重新分片。
 
 手动故障转移： 如一个主的要进行删除，可以直接杀掉主redis，集群会自动转移到从库使用
+
+参考文章：
+
+https://blog.51cto.com/phpme/2447995
+
+https://blog.csdn.net/iteen/article/details/102718048
+
+https://redis.io/topics/cluster-tutorial
