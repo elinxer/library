@@ -12,7 +12,7 @@ type Person struct {
 }
 
 type Family struct {
-    Persons []Person
+	Persons []Person
 }
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 		Name: "Elinx",
 		Age:  26,
 	}
-	
+
 	man, _ := json.Marshal(manJson)
 	fmt.Println(string(man))
 
@@ -41,12 +41,12 @@ func main() {
 	// 解析多维数组
 	var f Family
 
-    // 模拟传输的Json数据
-    familyJSON := `{"Persons": [{"Name":"Elinx","Age":26}, {"Name":"Twinkle","Age":21}] }`
-	
+	// 模拟传输的Json数据
+	familyJSON := `{"Persons": [{"Name":"Elinx","Age":26}, {"Name":"Twinkle","Age":21}] }`
+
 	fmt.Println("======================")
 
-    // 解析字符串为Json
+	// 解析字符串为Json
 	json.Unmarshal([]byte(familyJSON), &f)
 	// 直接输出并不会展示全部层级，原因待考究
 	fmt.Println(f)
@@ -54,4 +54,10 @@ func main() {
 	jsons, _ := json.Marshal(f)
 
 	fmt.Println(string(jsons))
+
+	// 直接解析json单key结构，不使用结构体
+	uploadJSON := `{"xxxx": "test","zzzz": "1111111"}`
+	var jsonSlice2 map[string]interface{}
+	json.Unmarshal([]byte(uploadJSON), &jsonSlice2)
+	fmt.Println(jsonSlice2)
 }
