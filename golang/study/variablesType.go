@@ -17,7 +17,7 @@ import (
 	go语言类型数字代表的是位数，如int32是int32位
 
 
-	复数- 欧拉公式
+	复数i 欧拉公式，i是符号
 	根号负一
 	i = √-1
 
@@ -26,20 +26,23 @@ import (
 
 func euler1() {
 	// 直接数字和i字母结合，编译器会自动识别为复数类型
+	// 3 是实部 4是虚部，i是复数符号
 	c := 3 + 4i
 	// 对c取模（cmplx库函数叫绝对值）
 	fmt.Println(cmplx.Abs(c))
 }
 
 func euler2() {
+	// 底数是E
 	str := cmplx.Pow(math.E, 1i*math.Pi) + 1
 	fmt.Println(str)
 	// 采用e为底数可以直接使用欧拉公式
 	str2 := cmplx.Exp(1i*math.Pi) + 1
 	fmt.Println(str2)
+	fmt.Printf("%.3f \n", str2)
 }
 
-// 类型转换
+// 强制类型转换
 func triangle() {
 	var a, b int = 3, 4
 	var c int
@@ -71,7 +74,7 @@ func main() {
 		float32, float64
 
 		复数类型
-		complex64, complex128
+		complex64 实部和虚部分别是32位, complex128 实部和虚部分别是64位
 
 	*/
 
