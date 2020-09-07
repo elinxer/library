@@ -1,5 +1,4 @@
-//+build ignore
-package main
+package tree
 
 import "fmt"
 
@@ -30,91 +29,90 @@ nil指针也可以调用方法！！
 */
 
 // 树节点结构
-type treeNode struct {
-	value       int
-	left, right *treeNode
+type TreeNode struct {
+	Value       int
+	Left, Right *TreeNode
 }
 
 // 结构体处理方法
-// 接收者 (node treeNode)  传值
+// 接收者 (node TreeNode)  传值
 // 函数名 print
 // root.print()
-func (node treeNode) print() {
-	fmt.Println(node.value, "")
+func (node TreeNode) Print() {
+	fmt.Println(node.Value, "")
 }
 
 // 传值的，不会改变外部
-func (node treeNode) setValue1(value int)  {
-	node.value = value
+func (node TreeNode) setValue1(value int) {
+	node.Value = value
 }
 
 // 直接接受者使用的是指针就好，其他指针也不用定义
 // go会默认解释并返回，来调用方都不用在声明指针，直接用
-func (node *treeNode) setValue(value int)  {
+func (node *TreeNode) SetValue(value int) {
 	if node == nil {
 		// 如果node是nil是不能再操作的，不然会报错，所以一定要return或保证不做操作
 		fmt.Println("Setting value to nil node. Ignored.")
 		return
 	}
-	node.value = value
+	node.Value = value
 }
 
 // 中序遍历: 左中右
-func (node *treeNode) traverse() {
-	if	node == nil {
+func (node *TreeNode) Traverse() {
+	if node == nil {
 		return
 	}
-	node.left.traverse()
-	node.print()
-	node.right.traverse()
+	node.Left.Traverse()
+	node.Print()
+	node.Right.Traverse()
 
 }
 
-
 // 工厂函数实现构造
-func createNode(value int) *treeNode {
+func CreateNode(value int) *TreeNode {
 	// 返回局部变量的地址给外部用
 	// 局部变量创建在哪里了呢？
 	// 不需要知道！由go决定业务上是堆还是栈上
-	return &treeNode{value: value}
+	return &TreeNode{Value: value}
 }
 
-func main() {
+func main1111() {
 
-	var root treeNode
-	root = treeNode{value: 3}
-	root.left = &treeNode{}
-	root.right = &treeNode{5, nil, nil}
-	root.right.left = new(treeNode)
-	root.left.right = createNode(2)
-	fmt.Println(root)
+	// var root tree.TreeNode
+	// root = TreeNode{Value: 3}
+	// root.left = &TreeNode{}
+	// root.right = &TreeNode{5, nil, nil}
+	// root.right.left = new(TreeNode)
+	// root.left.right = createNode(2)
+	fmt.Println("test")
 
-	nodes := []treeNode{
-		{value: 3},
-		{},
-		{6, nil, &root},
-	}
+	// nodes := []TreeNode{
+	// 	{value: 3},
+	// 	{},
+	// 	{6, nil, &root},
+	// }
 
-	fmt.Println(nodes)
-	root.print()
-	root.right.left.setValue1(4)
-	root.right.left.print()
+	// fmt.Println(nodes)
+	// root.print()
+	// root.right.left.setValue1(4)
+	// root.right.left.print()
 
-	root.print()
-	root.setValue(100)
+	// root.print()
+	// root.setValue(100)
 
-	pRoot := &root
-	pRoot.print()
-	pRoot.setValue(200)
-	pRoot.print()
-	root.print()
+	// pRoot := &root
+	// pRoot.print()
+	// pRoot.setValue(200)
+	// pRoot.print()
+	// root.print()
 
-	var ppRoot *treeNode
-	ppRoot.setValue(200)
-	ppRoot = &root
-	ppRoot.setValue(300)
-	ppRoot.print()
+	// var ppRoot *treeNode
+	// ppRoot.setValue(200)
+	// ppRoot = &root
+	// ppRoot.setValue(300)
+	// ppRoot.print()
 
-	root.traverse()
+	// root.traverse()
 
 }
