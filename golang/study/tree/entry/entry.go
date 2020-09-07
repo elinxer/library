@@ -11,6 +11,28 @@ import (
 	"library/golang/study/tree"
 )
 
+// 定义小写首字母，不给包外使用了
+type myTreeNode struct {
+	// 这里使用指针是避免再拷贝一次TreeNode
+	node *tree.TreeNode
+}
+
+// 实现这个结构MyTreeNode
+
+func (myNode *myTreeNode) postOrder() {
+	if myNode == nil || myNode.node == nil {
+		return
+	}
+	left := myTreeNode{myNode.node.Left}
+	left.postOrder()
+
+	right := myTreeNode{myNode.node.Right}
+
+	right.postOrder()
+
+	myNode.node.Print()
+}
+
 func main() {
 
 	var root tree.TreeNode
@@ -19,6 +41,15 @@ func main() {
 	root.Right = &tree.TreeNode{5, nil, nil}
 	root.Right.Left = new(tree.TreeNode)
 	root.Left.Right = tree.CreateNode(2)
-	fmt.Println(root)
+
+	root.Right.Left.SetValue(4)
+
+	root.Traverse()
+	fmt.Println()
+
+	// 传入这个实体结构，关键是这里衔接的
+	myRoot := myTreeNode{&root}
+	myRoot.postOrder()
+	fmt.Println()
 
 }
