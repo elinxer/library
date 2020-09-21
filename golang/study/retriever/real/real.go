@@ -11,7 +11,9 @@ type Retriever struct {
 	TimeOut   time.Duration
 }
 
-func (r Retriever) Get(url string) string {
+// 实现使用指针指向这个实现者
+// 这样可以直接引入struct结构体，不需要复制
+func (r *Retriever) Get(url string) string {
 	resp, err := http.Get(url)
 	if err != nil {
 		panic(err)
