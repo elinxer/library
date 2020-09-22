@@ -15,15 +15,42 @@ type Retriever interface {
 	Get(url string) string
 }
 
+type Poster interface {
+	Post(url string, form map[string]string) string
+}
+
+// 接口定义
+type RetrieverPoster interface {
+	Retriever
+	Poster
+}
+
+const url = "http://www.imooc.com"
+
+func post(poster Poster) {
+	poster.Post("https://www.baidu.com", map[string]string{
+		"name":     "elinx11",
+		"password": "123456",
+	})
+}
+
+// 使用者
+func session(s RetrieverPoster) string {
+	s.Post(url, map[string]string{
+		"contents": "another faked mock",
+	})
+	return s.Get(url)
+}
+
 // 这里是调用者
 func download(r Retriever) string {
 	return r.Get("https://www.baidu.com")
 }
 
-func inspect(r Retriever)  {
+func inspect(r Retriever) {
 	fmt.Printf("%T %v:\n", r, r)
 	fmt.Println("Type switch:")
-	switch v:= r.(type) {
+	switch v := r.(type) {
 	case mock.Retriever:
 		fmt.Println("Contents:", v.Contents)
 	case *real.Retriever:
@@ -82,5 +109,10 @@ func main() {
 	} else {
 		fmt.Println("Not a mock retriver.")
 	}
+
+	retriever := mock.Retriever{"this is fake!"}
+
+	fmt.Println("try session:")
+	fmt.Println(session(&retriever))
 
 }
