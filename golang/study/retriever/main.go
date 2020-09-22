@@ -21,7 +21,7 @@ func download(r Retriever) string {
 }
 
 func inspect(r Retriever)  {
-	fmt.Printf("%T %v\n:", r, r)
+	fmt.Printf("%T %v:\n", r, r)
 	fmt.Println("Type switch:")
 	switch v:= r.(type) {
 	case mock.Retriever:
@@ -67,7 +67,7 @@ func main() {
 	}
 
 	// real.Retriever {Mozilla/5.0 1m0s}
-	fmt.Printf("%T %v \n", r, r)
+	fmt.Printf("%T %v :\n", r, r)
 
 	fmt.Println()
 
