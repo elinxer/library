@@ -48,14 +48,21 @@ func download(r Retriever) string {
 }
 
 func inspect(r Retriever) {
+
+	fmt.Println("Inspecting", r)
+	fmt.Printf("> $T %v\n", r, r)
+
 	fmt.Printf("%T %v:\n", r, r)
-	fmt.Println("Type switch:")
+	fmt.Println("> Type switch:")
 	switch v := r.(type) {
 	case mock.Retriever:
 		fmt.Println("Contents:", v.Contents)
 	case *real.Retriever:
 		fmt.Println("UserAgent:", v.UserAgent)
 	}
+
+	fmt.Println()
+
 }
 
 func main() {
@@ -115,4 +122,6 @@ func main() {
 	fmt.Println("try session:")
 	fmt.Println(session(&retriever))
 
+	inspect(&retriever)
+	
 }
