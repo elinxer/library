@@ -4,8 +4,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // 整数转二进制
@@ -38,8 +40,18 @@ func printFile(filename string) {
 
 }
 
+// 可以打印文件内容，可以直接传入流打印指定字符串
+func printContents(reader io.Reader) {
+	scanner := bufio.NewScanner(reader)
+
+	// 没有起始条件没有递增条件，只有结束条件，所以可直接这样写
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
+
 // 死循环
-func forever()  {
+func forever() {
 	for {
 		fmt.Println("a123")
 	}
@@ -58,6 +70,14 @@ func main() {
 
 	//forever()
 
-	printFile("abc.txt")
+	//printFile("abc.txt")
+
+	s := `
+	fsdfsdf
+	fsdfsd
+	123232
+	fdf
+	`
+	printContents(strings.NewReader(s))
 
 }
