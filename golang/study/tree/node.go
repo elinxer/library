@@ -64,13 +64,30 @@ func (node *TreeNode) SetValue(value int) {
 
 // 中序遍历: 左中右
 func (node *TreeNode) Traverse() {
+
+	// 重写的方式
+	node.TraverseFunc(func(node *TreeNode) {
+		node.Print()
+	})
+	fmt.Println()
+
+	// if node == nil {
+	// 	return
+	// }
+	// node.Left.Traverse()
+	// node.Print()
+	// node.Right.Traverse()
+
+}
+
+// 函数
+func (node *TreeNode) TraverseFunc(f func(*TreeNode)) {
 	if node == nil {
 		return
 	}
-	node.Left.Traverse()
-	node.Print()
-	node.Right.Traverse()
-
+	node.Left.TraverseFunc(f)
+	f(node)
+	node.Right.TraverseFunc(f)
 }
 
 // 工厂函数实现构造
