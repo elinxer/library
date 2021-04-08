@@ -1,0 +1,17 @@
+
+version : '2.1'
+services :
+  db:
+    container_name: pgsql
+    restart: always
+    image: postgres
+    privileged: true
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: zhiteer
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+
