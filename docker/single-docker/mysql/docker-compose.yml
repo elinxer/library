@@ -1,0 +1,16 @@
+version : '2.1'
+services :
+   mysql :
+     build :
+        context : ./
+        dockerfile : dockerfile
+     ports :
+        - "3306:3306"
+     volumes :
+        - ./mysql/data:/var/lib/mysql
+     #初始密码
+     environment :
+        - MYSQL_ROOT_PASSWORD=123456
+     container_name : mysql
+     restart : always   
+   
