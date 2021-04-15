@@ -2,7 +2,7 @@ version: '3'
 
 services:
   emqx1:
-    image: emqx/emqx-ee:4.2.5
+    image: emqx/emqx:4.2.10
     ports:
       - 1883:1883
       - 8083:8083
@@ -24,7 +24,7 @@ services:
         - node1.emqx.io
 
   emqx2:
-    image: emqx/emqx-ee:4.2.5
+    image: emqx/emqx:4.2.10
     ports:
       - 1884:1883
       - 8084:8083
