@@ -1,5 +1,5 @@
 version: '3'
-
+# 账号密码 admin / public
 services:
   emqx1:
     image: emqx/emqx-ee:4.2.5
