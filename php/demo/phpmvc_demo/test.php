@@ -1,7 +1,7 @@
 <?php
 function qr_code($data, $type = "TXT", $size ='150', $ec='L', $margin='0')  
 {
-     $types = array("URL" =--> "http://", "TEL" => "TEL:", "TXT"=>"", "EMAIL" => "MAILTO:");
+     $types = array("URL" => "http://", "TEL" => "TEL:", "TXT"=>"", "EMAIL" => "MAILTO:");
     if(!in_array($type,array("URL", "TEL", "TXT", "EMAIL")))
     {
         $type = "TXT";

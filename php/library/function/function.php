@@ -97,7 +97,7 @@ function get_filenames_bydir($dir){
     get_all_files($dir,$files);
     return $files;
 }
-function get_all_files($path,&$files) {
+function get_all_files($path, &$files) {
     if(is_dir($path)){
         $dp = dir($path);
         while ($file = $dp ->read()){
