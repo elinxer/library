@@ -1,19 +1,95 @@
+# Git常用命令指南
 
-# git 使用命令
+## Git仓库设置
 
-- 初始化仓库
+创建一个新仓库
+
+```
+git clone git://github.com/elinxer/library.git
+cd test
+touch README.md
+git add README.md
+git commit -m "add README"
+git push -u origin master
+```
+
+推送现有文件夹
+
+```
+cd existing_folder
 git init
+git remote add origin git://github.com/elinxer/library.git
+git add .
+git commit -m "Initial commit"
+git push -u origin master
+```
 
-- 创建本地密匙key，用于远程仓库识别
+推送现有的 Git 仓库
 
+```
+cd existing_repo
+git remote rename origin old-origin
+git remote add origin git://github.com/elinxer/library.git
+git push -u origin --all
+git push -u origin --tags
+```
 
+更改原仓库地址
 
-- 本地配置远程仓库用户名和邮箱
-git config --global user.name "你的用户名"
-git config --global user.email "你的邮箱地址"
+```
+git remote set-url origin URL
+```
 
+远程仓库相关命令
 
-- 提交到远程库
+```
+检出仓库： git clone git://github.com/elinxer/library.git
+查看远程仓库： git remote -v
+添加远程仓库： git remote add [name] [url]
+删除远程仓库： git remote rm [name]
+修改远程仓库： git remote set-url --push [name] [newUrl]
+拉取远程仓库： git pull [remoteName] [localBranchName]
+推送远程仓库： git push [remoteName] [localBranchName]
+```
+
+## Git新仓库处理
+
+**初始化本地仓库**
+
+```
+git init
+```
+
+**创建本地密匙key，用于远程仓库识别**
+
+打开 git bash
+
+```
+ssh-keygen -t rsa -C "youremail@example.com"
+```
+
+将生成的秘钥配置到远程仓库中去，后续直接使用秘钥操作。
+
+**本地配置远程仓库用户名和邮箱**
+
+Git 全局设置
+
+```
+git config --global user.name "xxxx"
+git config --global user.email "xxxx@xxx.com.cn"
+```
+默认仓库是空的，分支也不存在，需要手动提交一次代码到指定名称的仓库，一般会自动创建。
+
+```
+git add readme.md
+git commit -m 'init'
+git push -u origin main
+```
+
+## Git日常指令
+
+**提交代码到远程库步骤**
+
 - 可以先执行git pull命令远程命令来同步自己的本地仓库。
 git pull
 或者
@@ -37,14 +113,14 @@ git commit -m '本次提交说明';
 ssh -T git@github.com
 
 - 添加本地仓库到远程github库
-git remote add origin https://github.com/elinxer/love.git
+git remote add origin https://github.com/elinxer/library.git
 - 或者
-git remote add origin git@github.com:elinxer/love.git
+git remote add origin git@github.com:elinxer/library.git
 
 - git 可以使用git add -A 来获取本地所有修改变化，然后提交，可以跟远程仓库保持同步
 
 - 查看提交/操作日志，如进入查看按q退出
-git log
+git log 、
 git reflog
 
 - 查看git状态
@@ -54,68 +130,102 @@ git status [-s]
 git diff
 
 - 克隆远程库
-git clone gituser@git.server.com:project.git
+git clone git://github.com/elinxer/library.git
+
+
+## Git解决冲突问题
 
 ```
-Git常用操作命令：
-1) 远程仓库相关命令
-检出仓库：$ git clone git://github.com/jquery/jquery.git
-查看远程仓库：$ git remote -v
-添加远程仓库：$ git remote add [name] [url]
-删除远程仓库：$ git remote rm [name]
-修改远程仓库：$ git remote set-url --push [name] [newUrl]
-拉取远程仓库：$ git pull [remoteName] [localBranchName]
-推送远程仓库：$ git push [remoteName] [localBranchName]
- 
-*如果想把本地的某个分支test提交到远程仓库，并作为远程仓库的master分支，或者作为另外一个名叫test的分支，如下：
-$git push origin test:master         // 提交本地test分支作为远程的master分支
-$git push origin test:test              // 提交本地test分支作为远程的test分支
- 
-2）分支(branch)操作相关命令
-查看本地分支：$ git branch
-查看远程分支：$ git branch -r
-创建本地分支：$ git branch [name] ----注意新分支创建后不会自动切换为当前分支
-切换分支：$ git checkout [name]
-创建新分支并立即切换到新分支：$ git checkout -b [name]
-删除分支：$ git branch -d [name] ---- -d选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。如果想强制删除一个分支，可以使用-D选项
-合并分支：$ git merge [name] ----将名称为[name]的分支与当前分支合并
+git stash 
+git pull 
+git stash pop
+
+然后可以使用git diff -w +文件名 来确认代码自动合并的情况.
+
+反过来,如果希望用代码库中的文件完全覆盖本地工作版本. 方法如下:
+
+git reset --hard 
+git pull
+
+git 放弃本地修改 强制更新
+git fetch --all
+git reset --hard origin/master
+git fetch 只是下载远程的库的内容，不做任何的合并 git reset 把HEAD指向刚刚下载的最新的版本
+
+git merge：默认情况下，Git执行"快进式合并"（fast-farward merge），会直接将master分支指向dev分支。
+使用--no-ff参数后，会执行正常合并，在Master分支上生成一个新节点。为了保证版本演进的清晰，建议采用这种方法。
+
+git merge --no-ff dev
+```
+
+## 分支(branch)操作相关命令
+
+```
+查看本地分支：git branch
+查看远程分支：git branch -r
+创建本地分支：git branch [name] ----注意新分支创建后不会自动切换为当前分支
+切换分支：git checkout [name]
+
+创建新分支并立即切换到新分支：git checkout -b [name]
+
+删除分支：git branch -d [name] ---- -d选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。如果想强制删除一个分支，可以使用-D选项
+
+合并分支：git merge [name] ----将名称为[name]的分支与当前分支合并
 创建远程分支(本地分支push到远程)：$ git push origin [name]
-删除远程分支：$ git push origin :heads/[name] 或 $ gitpush origin :[name] 
- 
-*创建空的分支：(执行命令之前记得先提交你当前分支的修改，否则会被强制删干净没得后悔)
-$git symbolic-ref HEAD refs/heads/[name]
-$rm .git/index
-$git clean -fdx
- 
-3）版本(tag)操作相关命令
-查看版本：$ git tag
-创建版本：$ git tag [name]
-删除版本：$ git tag -d [name]
-查看远程版本：$ git tag -r
-创建远程版本(本地版本push到远程)：$ git push origin [name]
-删除远程版本：$ git push origin :refs/tags/[name]
-合并远程仓库的tag到本地：$ git pull origin --tags
-上传本地tag到远程仓库：$ git push origin --tags
-创建带注释的tag：$ git tag -a [name] -m 'yourMessage'
- 
-4) 子模块(submodule)相关操作命令
-添加子模块：$ git submodule add [url] [path]
-   如：$git submodule add git://github.com/soberh/ui-libs.git src/main/webapp/ui-libs
-初始化子模块：$ git submodule init  ----只在首次检出仓库时运行一次就行
-更新子模块：$ git submodule update ----每次更新或切换分支后都需要运行一下
+
+删除远程分支：git push origin :heads/[name] 或 gitpush origin :[name] 
+
+如果想把本地的某个分支test提交到远程仓库，并作为远程仓库的master分支，或者作为另外一个名叫test的分支，如下：
+git push origin test:master         // 提交本地test分支作为远程的master分支
+git push origin test:test              // 提交本地test分支作为远程的test分支
+
+创建空的分支：(执行命令之前记得先提交你当前分支的修改，否则会被强制删干净没得后悔)
+git symbolic-ref HEAD refs/heads/[name]
+rm .git/index
+git clean -fdx
+```
+
+## 版本(tag)操作相关命令
+
+```
+查看版本： git tag
+创建版本： git tag [name]
+删除版本： git tag -d [name]
+查看远程版本： git tag -r
+创建远程版本(本地版本push到远程)： git push origin [name]
+删除远程版本： git push origin :refs/tags/[name]
+合并远程仓库的tag到本地： git pull origin --tags
+上传本地tag到远程仓库： git push origin --tags
+创建带注释的tag： git tag -a [name] -m 'yourMessage'
+```
+
+## 子模块(submodule)相关操作命令
+
+```
+添加子模块： 
+git submodule add [url] [path]
+如：
+git submodule add git://github.com/elinxer/library.git src/main/webapp/ui-libs
+
+初始化子模块： git submodule init  ----只在首次检出仓库时运行一次就行
+更新子模块：git submodule update ----每次更新或切换分支后都需要运行一下
 删除子模块：（分4步走哦）
- 1) $ git rm --cached [path]
+
+ 1) git rm --cached [path]
  2) 编辑“.gitmodules”文件，将子模块的相关配置节点删除掉
  3) 编辑“ .git/config”文件，将子模块的相关配置节点删除掉
  4) 手动删除子模块残留的目录
- 
-5）忽略一些文件、文件夹不提交
+ 5）忽略一些文件、文件夹不提交
+
 在仓库根目录下创建名称为“.gitignore”的文件，写入不需要的文件夹名或文件，每个元素占一行即可，如
 target
 bin
-*.db
- 
-Git 常用命令
+*.db 
+```
+
+## Git常用操作命令大全
+
+```
 git branch 查看本地所有分支
 git status 查看当前状态 
 git commit 提交 
@@ -135,7 +245,7 @@ git checkout dev 切换到本地dev分支
 git remote show 查看远程库
 git add .
 git rm 文件名(包括路径) 从git中删除指定文件
-git clone git://github.com/schacon/grit.git 从服务器上将代码给拉下来
+git clone git://github.com/elinxer/library.git 从服务器上将代码给拉下来
 git config --list 看所有用户
 git ls-files 看已经被提交的
 git rm [file name] 删除一个文件
@@ -155,7 +265,7 @@ git diff --cached 或 $ git diff --staged 查看尚未提交的更新
 git stash push 将文件给push到一个临时空间中
 git stash pop 将文件从临时空间pop下来
 ---------------------------------------------------------
-git remote add origin git@github.com:username/Hello-World.git
+git remote add origin git://github.com/elinxer/library.git
 git push origin master 将本地项目给提交到服务器中
 -----------------------------------------------------------
 git pull 本地与服务器端同步
@@ -176,38 +286,8 @@ cd WebApp
 git init
 touch README
 git add README
-git commit -m 'first commit'
-git remote add origin git@github.com:daixu/WebApp.git
+git commit -m 'init'
+git remote add git://github.com/elinxer/library.git
 git push -u origin master
 
 ```
-
-```
-- git 解决冲突问题
-git stash 
-git pull 
-git stash pop
-然后可以使用git diff -w +文件名 来确认代码自动合并的情况.
-
-反过来,如果希望用代码库中的文件完全覆盖本地工作版本. 方法如下:
-git reset --hard 
-git pull
-```
-
-git 放弃本地修改 强制更新
-git fetch --all
-git reset --hard origin/master
-git fetch 只是下载远程的库的内容，不做任何的合并 git reset 把HEAD指向刚刚下载的最新的版本
-
-##更改原仓库地址
-```
-
-git remote set-url origin URL
-
-- 以下命令可以不进行
-git remote set-branches [--add] <name> <branch>...
-git remote set-url [--push] <name> <newurl> [<oldurl>]
-git remote set-url --add <name> <newurl>
-git remote set-url --delete <name> <url>
-```
-
