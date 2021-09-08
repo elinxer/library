@@ -1,4 +1,6 @@
 # https://www.cnblogs.com/linanjie/p/13932377.html
+#https://www.jianshu.com/p/edf57ba6a159
+# 初始化密码在./docker-nexus/data/admin.password里面
 version: '3'
 services:
   nexus:
