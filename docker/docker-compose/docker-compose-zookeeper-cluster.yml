@@ -1,0 +1,41 @@
+version: "3"
+services:
+  zookeeper1:
+    image: zookeeper:3.4.11
+    restart: always
+    hostname: zookeeper1
+    container_name: zookeeper_1
+    ports:
+      - 2181:2181
+    volumes:
+      - /data/docker_file/zookeeper_cluster/zookeeper1/data:/data
+      - /data/docker_file/zookeeper_cluster/zookeeper1/datalog:/datalog
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888
+  zookeeper2:
+    image: zookeeper:3.4.11
+    restart: always
+    hostname: zookeeper2
+    container_name: zookeeper_2
+    ports:
+      - 2182:2181
+    volumes:
+      - /data/docker_file/zookeeper_cluster/zookeeper2/data:/data
+      - /data/docker_file/zookeeper_cluster/zookeeper2/datalog:/datalog
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888
+  zookeeper3:
+    image: zookeeper:3.4.11
+    restart: always
+    hostname: zookeeper3
+    container_name: zookeeper_3
+    ports:
+      - 2183:2181
+    volumes:
+      - /data/docker_file/zookeeper_cluster/zookeeper3/data:/data
+      - /data/docker_file/zookeeper_cluster/zookeeper3/datalog:/datalog
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888

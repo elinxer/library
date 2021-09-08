@@ -1,0 +1,66 @@
+version: '3'
+services:
+  # ref : https://hub.docker.com/_/nextcloud
+  nextcloud_server:
+    image: nextcloud
+    container_name: nextcloud_server
+    ports:
+      - 8080:80
+    volumes:
+      - ./server/data/:/var/www/html
+    restart: always
+    depends_on:
+      - nextcloud_mysql
+      - nextcloud_redis
+    environment:
+      # 配置信任的域名或者ip，空格分隔，不配置可能无法访问
+      - NEXTCLOUD_TRUSTED_DOMAINS=10.139.60.80 nextcloud.kancy.com
+      # 设置默认管理员账户
+      - NEXTCLOUD_ADMIN_USER=nextcloud
+      - NEXTCLOUD_ADMIN_PASSWORD=nextcloud
+      # 使用外部redis缓存，提供效率
+      - REDIS_HOST=nextcloud_redis
+      - REDIS_HOST_PORT=6379
+      - REDIS_HOST_PASSWORD=root123
+      # 使用sqlite作为元数据存储，默认方式
+      #- SQLITE_DATABASE=nextcloud
+      # 使用mysql作为元数据存储
+      - MYSQL_HOST=nextcloud_mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root123
+      - MYSQL_DATABASE=nextcloud
+      # 配置邮件服务
+      - SMTP_HOST=smtp.vcredit.com
+      - SMTP_PORT=25
+      - SMTP_NAME=fkydssj@vcredit.com
+      - SMTP_PASSWORD=jtds2018!!
+      - MAIL_FROM_ADDRESS=fkydssj
+      - MAIL_DOMAIN=vcredit.com
+  nextcloud_mysql:
+    image: mysql:5.7.22
+    container_name: nextcloud_mysql
+    hostname: nextcloud_mysql
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    volumes:
+      - ./mysql/data/:/var/lib/mysql/
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root123
+  nextcloud_redis:
+    image: redis:6.0.2
+    hostname: nextcloud_redis
+    container_name: nextcloud_redis
+    restart: always
+    command: redis-server --requirepass "root123"
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - "6379:6379"

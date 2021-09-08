@@ -1,0 +1,37 @@
+version: '3'
+services:
+  elasticsearch:
+    image: bolingcavalry/elasticsearch-with-ik:6.5.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - cluster.name=elastic-pro
+      - node.name=node_master_9200
+      - node.master=true
+      - node.data=true
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /data/docker_file/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+  kibana:
+    image: kibana:6.5.0
+    container_name: kibana
+    environment:
+      - SERVER_NAME=kibana
+      - ELASTICSEARCH_URL=http://10.139.60.138:9200
+      - XPACK_MONITORING_ENABLED=true
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    external_links:
+      - elasticsearch

@@ -1,0 +1,39 @@
+version: '3'
+services:
+  canal-server:
+    image: canal/canal-server:v1.1.4
+    container_name: canal-server
+    ports:
+      - 11111:11111
+    depends_on:
+      - mysql
+    environment:
+      - canal.destinations=test
+      - canal.instance.master.address=192.168.3.201:3306
+      - canal.instance.dbUsername=canal
+      - canal.instance.dbPassword=canal
+      - canal.instance.filter.regex=vccx.t_cust,vmc.*
+    volumes:
+      - ./canal-server/logs/:/home/admin/canal-server/logs/
+  mysql:
+    image: mysql:5.7.22
+    container_name: mysql
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      # canal 配置 , ref: https://github.com/alibaba/canal/wiki/QuickStart
+      --log-bin=mysql-bin
+      --server_id=1000
+      --binlog-format=ROW
+    volumes:
+      - /data/docker_file/mysql/data/:/var/lib/mysql/
+    restart: always
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root123

@@ -1,0 +1,22 @@
+version: '3'
+services:
+  # 默认的连接信息
+  # jdbc:oracle:thin:system/oracle@127.0.0.1:1521:xe
+  oracle12c:
+    image: registry.cn-hangzhou.aliyuncs.com/kancy/oracle12c
+    container_name: oracle12c
+    privileged: true
+    volumes:
+      #- /data/docker_file/oracle12c:/u01/app/oracle
+      - /data/docker_file/oracle12c/oradata:/u01/app/oracle/oradata
+    environment:
+      - ORACLE_PWD=root123
+    ports:
+      - "1521:1521"
+      - "1522:8080"
+    restart:
+      always
+
+networks:
+  oraclenetwork:
+    driver: 'local'

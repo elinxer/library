@@ -1,0 +1,18 @@
+version: '3'
+services:
+  # ref : http://oss.segetech.com/intra/srv/dnsmasq.conf
+  # ref : https://blog.csdn.net/qianabc2008/article/details/84560971
+  dns:
+    image: jpillora/dnsmasq
+    container_name: dns
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/docker_file/dns/config/dnsmasq.d:/etc/dnsmasq.d
+      - /data/docker_file/dns/config/dnsmasq.conf:/etc/dnsmasq.conf
+    ports:
+      - "53:53/udp"
+      - "8080:8080"
+    environment:
+      HTTP_USER: admin
+      HTTP_PASS: admin

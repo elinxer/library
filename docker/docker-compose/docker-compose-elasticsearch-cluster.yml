@@ -1,0 +1,64 @@
+version: '3'
+services:
+  # ref: https://blog.csdn.net/maquealone/article/details/89417257
+  # ref: https://www.elastic.co/guide/en/elasticsearch/reference/6.5/docker.html#docker-prod-cluster-composefile
+  elasticsearch_master:
+    image: bolingcavalry/elasticsearch-with-ik:6.5.0
+    container_name: elasticsearch_master
+    restart: always
+    environment:
+      - cluster.name=elasticsearch-cluster
+      - node.name=node_master_9200
+      - node.master=true
+      - node.data=true
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /data/docker_file/elasticsearch-cluster/master:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+  elasticsearch_slave1:
+    image: bolingcavalry/elasticsearch-with-ik:6.5.0
+    container_name: elasticsearch_slave_node_1
+    restart: always
+    environment:
+      - cluster.name=elasticsearch-cluster
+      - node.name=node_slave_9201
+      - node.master=false
+      - node.data=true
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=10.139.60.139"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /data/docker_file/elasticsearch-cluster/slave1:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+      - 9301:9300
+    depends_on:
+      - elasticsearch_master
+  kibana:
+    image: kibana:6.5.0
+    container_name: kibana
+    environment:
+      - SERVER_NAME=kibana
+      - ELASTICSEARCH_URL=http://10.139.60.138:9200
+      - XPACK_MONITORING_ENABLED=true
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch_master
+    external_links:
+      - elasticsearch_master

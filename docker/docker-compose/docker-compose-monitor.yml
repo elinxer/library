@@ -1,0 +1,56 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    hostname: prometheus
+    restart: always
+    volumes:
+      - /data/docker_file/monitor/conf/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /data/docker_file/monitor/conf/node_down.yml:/etc/prometheus/node_down.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitor
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    hostname: alertmanager
+    restart: always
+    volumes:
+      - /data/docker_file/monitor/conf/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    networks:
+      - monitor
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - monitor
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    hostname: node-exporter
+    restart: always
+    ports:
+      - "9100:9100"
+    networks:
+      - monitor
+#  mysqld-exporter:
+#    image: prom/mysqld-exporter
+#    ports:
+#      - "9104:9104"
+#    environment:
+#      - DATA_SOURCE_NAME=root:password@(10.139.60.82:3306)/database
+#    networks:
+#      - monitor
+
+networks:
+  monitor:
+    driver: bridge
+ 

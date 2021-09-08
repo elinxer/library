@@ -1,0 +1,83 @@
+version: '3'
+services:
+  # ref: https://blog.csdn.net/java_Murcielago/article/details/102776182
+  # 1.需要先把redis.conf 文件端口等修改后放到/data/docker_file/redis-cluster/node${num}/config目录 => 执行init.sh脚本即可
+  # 2.链接集群：docker run --rm -it zvelo/redis-trib create --replicas 1 ip:6061 ip:6062 ip:6063 ip:6064 ip:6065 ip:6066
+  redis1:
+    image: redis
+    container_name: redis-cluster-node-6061
+    hostname: redis-cluster-node-1
+    restart: always
+    ports:
+      - 6061:6061
+      - 16061:16061
+    volumes:
+      - /data/docker_file/redis-cluster/node_6061/data:/data
+      - /data/docker_file/redis-cluster/node_6061/config:/usr/local/etc/redis
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  redis2:
+    image: redis
+    container_name: redis-cluster-node-6062
+    hostname: redis-cluster-node-2
+    restart: always
+    ports:
+      - 6062:6062
+      - 16062:16062
+    volumes:
+      - /data/docker_file/redis-cluster/node_6062/data:/data
+      - /data/docker_file/redis-cluster/node_6062/config:/usr/local/etc/redis
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  redis3:
+    image: redis
+    container_name: redis-cluster-node-6063
+    hostname: redis-cluster-node-3
+    restart: always
+    ports:
+      - 6063:6063
+      - 16063:16063
+    volumes:
+      - /data/docker_file/redis-cluster/node_6063/data:/data
+      - /data/docker_file/redis-cluster/node_6063/config:/usr/local/etc/redis
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  redis4:
+    image: redis
+    container_name: redis-cluster-node-6064
+    hostname: redis-cluster-node-4
+    restart: always
+    ports:
+      - 6064:6064
+      - 16064:16064
+    volumes:
+      - /data/docker_file/redis-cluster/node_6064/data:/data
+      - /data/docker_file/redis-cluster/node_6064/config:/usr/local/etc/redis
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  redis5:
+    image: redis
+    container_name: redis-cluster-node-6065
+    hostname: redis-cluster-node-5
+    restart: always
+    ports:
+      - 6065:6065
+      - 16065:16065
+    volumes:
+      - /data/docker_file/redis-cluster/node_6065/data:/data
+      - /data/docker_file/redis-cluster/node_6065/config:/usr/local/etc/redis
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  redis6:
+    image: redis
+    container_name: redis-cluster-node-6066
+    hostname: redis-cluster-node-6
+    restart: always
+    ports:
+      - 6066:6066
+      - 16066:16066
+    volumes:
+      - /data/docker_file/redis-cluster/node_6066/data:/data
+      - /data/docker_file/redis-cluster/node_6066/config:/usr/local/etc/redis
+    command:
+      redis-server /usr/local/etc/redis/redis.conf

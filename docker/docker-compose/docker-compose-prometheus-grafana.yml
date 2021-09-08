@@ -1,0 +1,41 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    hostname: prometheus
+    restart: on-failure
+    volumes:
+      - /data/docker_file/prometheus/data:/prometheus
+      - /data/docker_file/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitor
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    restart: on-failure
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - /data/docker_file/grafana/data:/var/lib/grafana
+      - /data/docker_file/grafana/log:/var/log/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - monitor
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    hostname: node-exporter
+    restart: on-failure
+    ports:
+      - "9100:9100"
+    networks:
+      - monitor
+networks:
+  monitor:
+    driver: bridge
+ 

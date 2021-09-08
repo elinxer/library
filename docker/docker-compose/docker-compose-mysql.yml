@@ -1,0 +1,29 @@
+version: '3'
+services:
+  # ref：https://hub.docker.com/_/mysql
+  # ref：https://docs.docker.com/samples/library/mysql/#-via-docker-stack-deploy-or-docker-compose
+  mysql:
+    #image: mysql:5.7.22
+    #image: mysql:8.0
+    image: mysql:5.7.26
+    container_name: mysql
+    command: 
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    # data 用来存放了数据库表文件，init存放初始化的脚本
+    volumes:
+      - ~/data/docker_file/mysql/data/:/var/lib/mysql/
+      - ~/data/docker_file/mysql/conf/my.cnf:/etc/my.cnf
+      - ~/data/docker_file/mysql/init:/docker-entrypoint-initdb.d/
+    restart: always
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev123

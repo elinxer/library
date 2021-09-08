@@ -1,0 +1,86 @@
+pipeline{
+    agent{
+        label 'test'
+    }
+    environment{
+        //一般以git仓库组命名
+        PROJECT = 'vfts'
+
+        //项目名，一般保证和编译打包名一致
+        PRO_NAME = 'vfts-admin'
+
+		//git仓库地址
+        GIT_URL = 'git@10.138.61.72:src/zhongtai-vfts/vfts_admin.git'
+
+		//需要发布的服务器地址
+        SERVER_1 = '10.138.61.172'
+
+        //需在salt管理界面里定义好
+ //       SERVER_GROUP = 'vip-api'
+
+        //服务端口
+        SERVER_PORT= '9587'
+
+		//编译好的包的路径
+        PKG_DIR = '$WORKSPACE/target'
+
+        //编译好的包名
+        PKG_NAME = "${PRO_NAME}.jar"
+
+        //远程调用的用户
+        USER = 'rundeck'
+
+		//项目部署路径
+        REMOTE_DIR = "/data/${PRO_NAME}"
+
+        //本地包路径
+        LOCAL_DIR = "/data/srv/salt/$PROJECT"
+
+		//日志路径
+        LOG_DIR = "/data/logs/${PRO_NAME}"
+
+		//脚本参数，脚本路径和脚本文件
+        SCRIPTS_DIR = "/opt/apps/sh/vfts"
+        SCRIPTS_FILE = "restart_vfts.sh"
+
+        //环境参数
+        ENV = 'test'
+
+        MVN_DIR = '/opt/apps/apache-maven-3.5.2'
+    }
+    stages{
+        stage('git checkout'){
+            steps{
+                checkout(
+                [$class: 'GitSCM', branches: [[name: "$BRANCH"]],
+                doGenerateSubmoduleConfigurations: false,
+                submoduleCfg: [], userRemoteConfigs: [[credentialsId: '85d59bc9-659d-4957-9cda-e71eeeb35d4d',
+                url: "$GIT_URL"]]])
+            }
+        }
+        stage('mvn package'){
+            steps{
+                withSonarQubeEnv('Sonar'){
+                    sh '$MVN_DIR/bin/mvn clean package sonar:sonar -Dsonar.java.binaries=target/classes -Dmaven.test.skip=true -P test -U'
+                }
+            }
+        }
+        stage('scp package'){
+            steps{
+                sh 'sudo mkdir -pv $LOCAL_DIR/'
+                sh "sudo ln -snb ${PKG_DIR}/$PKG_NAME $LOCAL_DIR/"
+                sh "sudo ln -snb ${SCRIPTS_DIR}/${SCRIPTS_FILE} $LOCAL_DIR/"
+                sh 'ssh -o "StrictHostKeyChecking no" $SERVER_1 "sudo mkdir -pv $REMOTE_DIR && sudo chown -R $USER $REMOTE_DIR"'
+                sh 'scp -o "StrictHostKeyChecking no" $LOCAL_DIR/$PKG_NAME $SERVER_1:$REMOTE_DIR/$PKG_NAME'
+                sh 'scp -o "StrictHostKeyChecking no" $SCRIPTS_DIR/${SCRIPTS_FILE} $SERVER_1:$REMOTE_DIR/${SCRIPTS_FILE}'
+            }
+        }
+        stage('restart package'){
+            steps{
+               sh 'ssh -o "StrictHostKeyChecking no" $SERVER_1  "sudo /bin/bash $REMOTE_DIR/${SCRIPTS_FILE} $REMOTE_DIR $PKG_NAME $SERVER_PORT $ENV &"'
+               sh 'sleep 35'
+               sh 'ssh -o "StrictHostKeyChecking no" $SERVER_1 "sudo netstat -tunlp | grep $SERVER_PORT"'
+            }
+        }
+    }
+}

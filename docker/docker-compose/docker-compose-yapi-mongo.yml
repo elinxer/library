@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # ref: https://hellosean1025.github.io/yapi/documents/index.html
+  # ref: https://www.jianshu.com/p/a97d2efb23c5
+  # 进入容器执行以下命令进行初始化：cd /api/vendors && npm run install-server
+  # 一键命令：docker exec -it yapi  npm run install-server
+  # 登录账号 admin@admin.com，密码 ymfe.org
+  yapi:
+    image: registry.cn-hangzhou.aliyuncs.com/kancy/yapi:1.9.2
+    container_name:  yapi
+    restart:  always
+    ports:
+      - "3000:3000"
+    volumes:
+      - "/data/docker_file/yapi/config.json:/api/config.json"
+      - "/data/docker_file/yapi/log/:/api/log/"
+    depends_on:
+      - yapi-mongo
+  yapi-mongo:
+    image:  mongo:4.1.6
+    container_name: yapi-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root123
+    restart:  always
+    ports:
+      - "27017:27017"
+    volumes:
+      - "/data/docker_file/yapi/mongodb/data/db:/data/db"
+

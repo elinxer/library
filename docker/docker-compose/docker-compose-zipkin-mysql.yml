@@ -1,0 +1,16 @@
+version: '3'
+services:
+  # ref: https://github.com/openzipkin/zipkin/tree/master/docker
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=mysql
+      - MYSQL_DB=zipkin
+      - MYSQL_USER=dev
+      - MYSQL_PASS=dev123
+      - MYSQL_HOST=10.139.60.81
+      - MYSQL_TCP_PORT=3306
+    network_mode: host
+    ports:
+      - 9411:9411

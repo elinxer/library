@@ -1,0 +1,12 @@
+version: '3'
+services:
+  # ref: https://github.com/openzipkin/zipkin/tree/master/docker
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://10.139.60.138:9200
+    network_mode: host
+    ports:
+      - 9411:9411

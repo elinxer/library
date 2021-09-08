@@ -1,0 +1,33 @@
+{
+  "port": "3000",
+  // 管理员账户
+  "adminAccount": "admin@admin.com",
+  // 关闭注册功能
+  "closeRegister":true,
+  // mongo数据库配置
+  "db": {
+    // 集群配置
+    "connectString": "mongodb://127.0.0.100:8418,127.0.0.101:8418,127.0.0.102:8418/yapidb?slaveOk=true&authSource=admin",
+    "user": "******",
+    "pass": "******",
+    // 单机配置
+    "servername": "yapi-mongo",
+    "DATABASE": "yapi",
+    "port": 27017,
+    "user": "root",
+    "pass": "root123",
+    "authSource": "admin"
+  },
+  // 邮件服务配置
+  "mail": {
+    "enable": true,
+    "host": "smtp.163.com",
+    "port": 465,
+    "from": "18079637336@163.com",
+    "auth": {
+      "user": "18079637336@163.com",
+      "pass": "*********"
+    }
+  }
+}
+

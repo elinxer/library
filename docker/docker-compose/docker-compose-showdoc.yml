@@ -1,0 +1,12 @@
+version: '3'
+services:
+  # ref: https://www.showdoc.cc/help?page_id=65610
+  showdoc:
+    image: xd2idwf5.mirror.aliyuncs.com/star7th/showdoc
+    container_name: showdoc
+    restart: always
+    volumes:
+      # chmod -R 777 /data/docker_file/showdoc/html
+      - /data/docker_file/showdoc/html:/var/www/html/
+    ports:
+      - "4999:80"

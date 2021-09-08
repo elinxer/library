@@ -1,0 +1,33 @@
+version: '3'
+services:
+  # ref: https://blog.csdn.net/qq_24384579/article/details/86480522
+  consul_server1:
+    image: consul:latest
+    container_name: consul_server1
+    restart: always
+    command: agent -server -client=0.0.0.0 -bootstrap-expect=3 -node=consul_server1 -config-dir=/home/acl.json
+    volumes:
+      - /data/docker_file/consul_cluster/acl-server.json:/home/acl.json
+  consul_server2:
+    image: consul:latest
+    container_name: consul_server2
+    restart: always
+    command: agent -server -client=0.0.0.0 -retry-join=consul_server1 -node=consul_server2 -config-dir=/home/acl.json
+    volumes:
+      - /data/docker_file/consul_cluster/acl-server.json:/home/acl.json
+  consul_server3:
+    image: consul:latest
+    container_name: consul_server3
+    restart: always
+    command: agent -server -client=0.0.0.0 -retry-join=consul_server1 -node=consul_server3 -config-dir=/home/acl.json
+    volumes:
+      - /data/docker_file/consul_cluster/acl-server.json:/home/acl.json
+  consul_client:
+    image: consul:latest
+    container_name: consul_client
+    restart: always
+    ports:
+      - 8500:8500
+    command: agent -client=0.0.0.0 -retry-join=consul_server1 -ui -node=consul_client -config-dir=/home/acl_client.json
+    volumes:
+      - /data/docker_file/consul_cluster/acl-client.json:/home/acl_client.json

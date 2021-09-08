@@ -1,0 +1,15 @@
+version: '3'
+services:
+  nexus:
+    restart: always
+    #image: sonatype/nexus3:3.17.0
+    image: sonatype/nexus3
+    container_name: nexus3
+    ports:
+      - 8081:8081
+    volumes:
+      - /data/docker_file/nexus/nexus-data:/nexus-data
+
+# 运行前，先执行以下命令，解决权限问题
+# mkdir /data/docker_file/nexus/nexus-data && chown -R 200 /data/docker_file/nexus/nexus-data
+# https://blog.csdn.net/nklinsirui/article/details/96335635

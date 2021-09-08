@@ -1,0 +1,12 @@
+version: '3'
+services:
+  sonarqube:
+    image: sonarqube
+    environment:
+      sonar.jdbc.username: root
+      sonar.jdbc.password: root123
+      sonar.jdbc.url: jdbc:mysql://kancy.top:3306/sonarqube?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
+    ports:
+      - "9090:9000"
+    restart:
+      always

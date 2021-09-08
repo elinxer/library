@@ -1,0 +1,48 @@
+version: '3'
+services:
+  drools-wb:
+    image: registry.cn-hangzhou.aliyuncs.com/devops-t/business-central-workbench-showcase:7.34.0.Final
+    container_name: drools-wb
+    restart: always
+    ports:
+      - "8080:8080"
+      - "8001:8001"
+      - "9990:9990"
+    volumes:
+      - /data/docker_file/drools_wb/git_respository:/opt/jboss/wildfly/bin/.niogit:Z
+      - /data/docker_file/drools_wb/maven_respository:/opt/jboss/wildfly/bin/repositories/kie/global
+    networks:
+      - net-drools
+  kie-server1:
+    image: registry.cn-hangzhou.aliyuncs.com/devops-t/kie-server-showcase:7.34.0.Final
+    container_name: kie-server1
+    restart: always
+    ports:
+      - "8180:8080"
+    environment:
+      - KIE_SERVER_ID=kie-server1
+      - KIE_SERVER_CONTROLLER=http://drools-wb:8080/kie-wb/rest/controller
+    volumes:
+      - /data/docker_file/kie_server1/maven_repository:/opt/jboss/.m2/repository
+    depends_on:
+      - drools-wb
+    networks:
+      - net-drools
+  kie-server2:
+    image: registry.cn-hangzhou.aliyuncs.com/devops-t/kie-server-showcase:7.34.0.Final
+    container_name: kie-server2
+    restart: always
+    ports:
+      - "8280:8080"
+    environment:
+      - KIE_SERVER_ID=kie-server2
+      - KIE_SERVER_CONTROLLER=http://drools-wb:8080/kie-wb/rest/controller
+    volumes:
+      - /data/docker_file/kie_server2/maven_repository:/opt/jboss/.m2/repository
+    depends_on:
+      - drools-wb
+    networks:
+      - net-drools
+
+networks:
+  net-drools:

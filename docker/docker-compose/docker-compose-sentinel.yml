@@ -1,0 +1,14 @@
+version: '3'
+services:
+  sentinel-dashboard:
+    #image: sentinel-dashboard:1.7.2
+    image: registry.cn-hangzhou.aliyuncs.com/kancy/sentinel-dashboard-dynamic:1.7.2-beta
+    container_name: sentinel-dashboard
+    restart: on-failure
+    ports:
+      - "8080:8080"
+      - "8719:8719"
+    environment:
+      - JAVA_OPTS=-Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -Dcsp.sentinel.api.port=8719
+    volumes:
+      - /data/docker_file/sentinel-dashboard/logs:/root/logs

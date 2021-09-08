@@ -1,0 +1,12 @@
+version: "3"
+services:
+  zookeeper:
+    image: zookeeper:3.4.11
+    restart: always
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    volumes:
+      - /data/docker_file/zookeeper/data:/data
+      - /data/docker_file/zookeeper/datalog:/datalog

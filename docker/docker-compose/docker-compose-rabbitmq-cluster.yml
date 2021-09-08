@@ -1,0 +1,36 @@
+version: '3'
+services:
+  # ref: https://github.com/bijukunjummen/docker-rabbitmq-cluster
+  rabbitmq1:
+    image: bijukunjummen/rabbitmq-server:3.7.0
+    hostname: rabbitmq-cluster-node1
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  rabbitmq2:
+    image: bijukunjummen/rabbitmq-server:3.7.0
+    hostname: rabbitmq-cluster-node2
+    links:
+      - rabbitmq1
+    environment: 
+     - CLUSTERED=true
+     - CLUSTER_WITH=rabbitmq1
+     - RAM_NODE=true
+    ports:
+        - "5673:5672"
+        - "15673:15672"
+  rabbitmq3:
+    image: bijukunjummen/rabbitmq-server:3.7.0
+    hostname: rabbitmq-cluster-node3
+    links:
+      - rabbitmq1
+      - rabbitmq2
+    environment: 
+     - CLUSTERED=true
+     - CLUSTER_WITH=rabbitmq1
+    ports:
+      - "5674:5672"
+      - "15674:15672"

@@ -1,0 +1,15 @@
+version: '3'
+services:
+  # ref：https://www.jianshu.com/p/0fefc7e5cd0a
+  jenkins:
+    image: 'jenkins/jenkins:lts'
+    container_name: jenkins
+    restart: always
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    volumes:
+      - /data/docker_file/jenkins/data:/var/jenkins_home
+# mkdir -p /data/docker_file/jenkins/data      
+# chown -R 1000:1000 /data/docker_file/jenkins/data
+# cat /data/docker_file/jenkins/data/secrets/initialAdminPassword

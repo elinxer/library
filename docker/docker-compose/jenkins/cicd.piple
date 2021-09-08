@@ -1,0 +1,183 @@
+pipeline{
+    agent{
+        label  'docker'
+    }
+    environment{
+
+		//项目组名
+		PROJECT = 'vmc'
+
+		//项目部署的命名空间
+		NAMESPACE = 'fmp-vmc'
+
+		//项目名
+        PRO_NAME = 'vmc-business-parent'
+
+        //部署的服务名
+        SERVICE = 'vmc-promotion-service'
+
+		//git仓库地址
+        GIT_URL = 'git@10.138.61.72:VPDP/msa/vmc.git'
+
+		//编译好的包的路径
+		PKG_DIR = "$WORKSPACE/$PRO_NAME/$SERVICE/target"
+
+        //编译好的包名
+        PKG_NAME = '${SERVICE}.jar'
+
+		//模板文件
+        TEMP_FILE = 'vmc_templates.yaml'
+
+		//项目调度主机标签
+		LABEL = 'backend'
+
+        //项目端口
+        PORT = '39540'
+
+		//maven路径
+		MVN_DIR = '/opt/apps/apache-maven-3.5.2'
+
+        //harbor生产地址
+		PRO_REPO_URL = 'harbor.vcredit.com.local'
+
+		//harbor测试地址
+		TEST_REPO_URL = 'harbor-t.vcredit.com.local'
+
+        //yaml路径
+        FILE_DIR = '/opt/rancher'
+
+        //参数替换脚本
+        SCRIPTS_FILE = 'replace.sh'
+
+        //DOCKERFILE
+        DOCKER_FILE = 'Dockerfile'
+
+        //docker buid目录
+        BUILD_DIR  = '$FILE_DIR/$SIT_ARGS/build/$PROJECT/'
+
+        SIT_ARGS = 'uat'
+
+        PRO_ARGS = 'prod'
+
+        SIT_FILE = "$FILE_DIR/$SIT_ARGS/yaml/$PROJECT/${SERVICE}.yaml"
+
+        PRO_FILE = "$FILE_DIR/$PRO_ARGS/yaml/$PROJECT/${SERVICE}.yaml"
+
+    }
+    stages{
+        stage('git checkout'){
+            steps{
+                checkout(
+                [$class: 'GitSCM', branches: [[name: "${env.COMMIT_ID}"]],
+                doGenerateSubmoduleConfigurations: false,
+                submoduleCfg: [], userRemoteConfigs: [[credentialsId: '85d59bc9-659d-4957-9cda-e71eeeb35d4d',
+                url: "$GIT_URL"]]])
+            }
+        }
+        stage('mvn package and push image'){
+            steps{
+                sh """export JAVA_HOME=/opt/apps/jdk-11 &&  $MVN_DIR/bin/mvn \
+                    clean package \
+                    -Ddocker.repo.address=10.138.61.88:80 \
+                    -DsendCredentialsOverHttp=true \
+                    -Dmaven.test.skip=true \
+                    -Dimage.tag=`echo ${env.COMMIT_ID} | cut -b 1-6` \
+                    -pl ${PRO_NAME}/${SERVICE} \
+                    -am
+                    """
+            }
+        }
+        stage('mvn sonar'){
+    	    when {
+    	        expression {
+    	            return ("${env.sonar}" == "true")
+    	        }
+    	    }
+            steps{
+                withSonarQubeEnv('Sonar'){
+                    sh """export JAVA_HOME=/opt/apps/jdk-11 &&  $MVN_DIR/bin/mvn verify \
+                        sonar:sonar \
+                      """
+                }
+            }
+        }
+        stage('docker build image'){
+            steps{
+                withCredentials([usernameColonPassword(credentialsId: '9832d35f-49fe-4538-b348-9876f482861f', variable: 'harbor_user')]) {
+                    sh 'sudo docker login $TEST_REPO_URL'
+                }
+                //检测harbor仓库是否有该项目目录，若没有调用api创建项目对应目录
+                withCredentials([usernamePassword(credentialsId: '9832d35f-49fe-4538-b348-9876f482861f', passwordVariable: 'harbor_pass', usernameVariable: 'harbor_user')]) {
+                    sh '''
+                        if curl -u "$harbor_user:$harbor_pass" -X GET -H "Content-Type: application/json" "$TEST_REPO_URL/api/projects" | grep $PROJECT
+                        then
+                            continue;
+                        else
+                            curl -u "$harbor_user:$harbor_pass" -X POST -H "Content-Type: application/json" "$TEST_REPO_URL/api/projects" -d '{  "project_name": "'$PROJECT'","public": 0}'
+                        fi
+                    '''
+                }
+                sh "sudo mkdir -pv $BUILD_DIR"
+                sh "sudo \\cp $PKG_DIR/$PKG_NAME $BUILD_DIR"
+                sh "sudo \\cp $FILE_DIR/$DOCKER_FILE $BUILD_DIR"
+                sh "cd $BUILD_DIR && sudo docker build --build-arg PKG_NAME=$PKG_NAME --build-arg PROJECT=$PROJECT -t $TEST_REPO_URL/$PROJECT/$SERVICE:`echo ${env.COMMIT_ID} | cut -b 1-6` ."
+            }
+        }
+        stage('push image to test-harbor'){
+            steps{
+                //将镜像推到测试harbor
+                sh "sudo docker push $TEST_REPO_URL/$PROJECT/$SERVICE:`echo ${env.COMMIT_ID} | cut -b 1-6`"
+            }
+        }
+        stage('switch vcredit-sit'){
+            steps{
+                //切换kubeconf的context上下文至sit环境
+                sh "sudo kubectl config use-context vcredit-$SIT_ARGS"
+            }
+        }
+        stage('create sit-pods'){
+            steps{
+                //替换模板配置文件参数，生成应用yaml文件
+                sh "sudo /bin/bash -x $FILE_DIR/$SCRIPTS_FILE $PROJECT $NAMESPACE $SERVICE `echo ${env.COMMIT_ID} | cut -b 1-6` $TEST_REPO_URL $SIT_ARGS $LABEL"
+                sh "cat $SIT_FILE"
+                //读取yaml部署容器
+                sh "sudo kubectl apply -f $SIT_FILE --record"
+                sh "sleep 10"
+                sh "sudo kubectl get pods -n=$NAMESPACE"
+                sh "sudo kubectl get deployment -n=$NAMESPACE -o wide"
+            }
+        }
+        stage('push image to prod-harbor'){
+            options {
+                timeout(5)
+            }
+            input{
+                message "Should you continue to deploy to prod??"
+                ok "Yes, we should."
+                submitter "liujie"
+            }
+            steps{
+                withCredentials([usernameColonPassword(credentialsId: '9832d35f-49fe-4538-b348-9876f482861f', variable: 'harbor_user')]) {
+                    sh 'sudo docker login $PRO_REPO_URL'
+                }
+                sh "sudo docker tag $TEST_REPO_URL/$PROJECT/$SERVICE:`echo ${env.COMMIT_ID} | cut -b 1-6` $PRO_REPO_URL/$PROJECT/$SERVICE:`echo ${env.COMMIT_ID} | cut -b 1-6`"
+                sh "sudo docker push $PRO_REPO_URL/$PROJECT/$SERVICE:`echo ${env.COMMIT_ID} | cut -b 1-6`"
+            }
+        }
+        stage('switch vcredit-prod'){
+            steps{
+                sh "sudo kubectl config use-context vcredit"
+            }
+        }
+        stage('create prod-pods'){
+            steps{
+                sh "sudo /bin/bash -x $FILE_DIR/$SCRIPTS_FILE $PROJECT $NAMESPACE $SERVICE `echo ${env.COMMIT_ID} | cut -b 1-6` $PRO_REPO_URL $PRO_ARGS $LABEL"
+                sh "cat $PRO_FILE"
+                sh "sudo kubectl apply -f $PRO_FILE --record"
+                sh "sleep 10"
+                sh "sudo kubectl get pods -n=$NAMESPACE"
+                sh "sudo kubectl get deployment -n=$NAMESPACE -o wide"
+            }
+        }
+    }
+}

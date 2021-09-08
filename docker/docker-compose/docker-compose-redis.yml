@@ -1,0 +1,13 @@
+version: '3'
+services:
+  redis:
+    image: redis
+    container_name: redis
+    # 优先使用命令行参数，期次是redis.conf中的参数
+    command: redis-server /usr/local/etc/redis/redis.conf  --requirepass "root123"
+    restart: always
+    volumes:
+      - /data/docker_file/redis/data:/data
+      - /data/docker_file/redis/data/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"

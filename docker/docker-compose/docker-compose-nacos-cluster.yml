@@ -1,0 +1,81 @@
+version: '3'
+services:
+  # ref: https://github.com/nacos-group/nacos-docker
+  # ref: https://github.com/alibaba/nacos
+  # 运行前需要执行mysql脚本,修改数据库地址，另外可以通过custom.properties自定义nacos
+  nacos1:
+    hostname: nacos1
+    container_name: nacos1
+    image: nacos/nacos-server:latest
+    volumes:
+      - /data/docker_file/nacos-cluster/nacos1/logs:/home/nacos/logs
+      - /data/docker_file/nacos-cluster/init.d:/home/nacos/init.d
+    #  - /data/docker_file/nacos-cluster/init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+      - "9555:9555"
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVERS=nacos1:8848,nacos2:8848,nacos3:8848
+      - MYSQL_DATABASE_NUM=1
+      - MYSQL_MASTER_SERVICE_HOST=10.139.60.82
+      - MYSQL_MASTER_SERVICE_PORT=3306
+      #- MYSQL_SLAVE_SERVICE_HOST=10.139.60.82
+      #- MYSQL_SLAVE_SERVICE_PORT=3306
+      - MYSQL_MASTER_SERVICE_DB_NAME=nacos_dev
+      - MYSQL_MASTER_SERVICE_USER=root
+      - MYSQL_MASTER_SERVICE_PASSWORD=root123
+      - "JVM_XMS=512m"
+      - "JVM_XMX=512m"
+      - "JVM_XMN=256m"
+    restart: always
+  nacos2:
+    hostname: nacos2
+    container_name: nacos2
+    image: nacos/nacos-server:latest
+    volumes:
+      - /data/docker_file/nacos-cluster/nacos2/logs:/home/nacos/logs
+      - /data/docker_file/nacos-cluster/init.d:/home/nacos/init.d
+    #  - /data/docker_file/nacos-cluster/init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8849:8848"
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVERS=nacos1:8848,nacos2:8848,nacos3:8848
+      - MYSQL_DATABASE_NUM=1
+      - MYSQL_MASTER_SERVICE_HOST=10.139.60.82
+      - MYSQL_MASTER_SERVICE_PORT=3306
+      #- MYSQL_SLAVE_SERVICE_HOST=10.139.60.82
+      #- MYSQL_SLAVE_SERVICE_PORT=3306
+      - MYSQL_MASTER_SERVICE_DB_NAME=nacos_dev
+      - MYSQL_MASTER_SERVICE_USER=root
+      - MYSQL_MASTER_SERVICE_PASSWORD=root123
+      - "JVM_XMS=512m"
+      - "JVM_XMX=512m"
+      - "JVM_XMN=256m"
+    restart: always
+  nacos3:
+    hostname: nacos3
+    container_name: nacos3
+    image: nacos/nacos-server:latest
+    volumes:
+      - /data/docker_file/nacos-cluster/nacos3/logs:/home/nacos/logs
+      - /data/docker_file/nacos-cluster/init.d:/home/nacos/init.d
+    #  - /data/docker_file/nacos-cluster/init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8850:8848"
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVERS=nacos1:8848,nacos2:8848,nacos3:8848
+      - MYSQL_DATABASE_NUM=1
+      - MYSQL_MASTER_SERVICE_HOST=10.139.60.82
+      - MYSQL_MASTER_SERVICE_PORT=3306
+      #- MYSQL_SLAVE_SERVICE_HOST=10.139.60.82
+      #- MYSQL_SLAVE_SERVICE_PORT=3306
+      - MYSQL_MASTER_SERVICE_DB_NAME=nacos_dev
+      - MYSQL_MASTER_SERVICE_USER=root
+      - MYSQL_MASTER_SERVICE_PASSWORD=root123
+      - "JVM_XMS=512m"
+      - "JVM_XMX=512m"
+      - "JVM_XMN=256m"
+    restart: always

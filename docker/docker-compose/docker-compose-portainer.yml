@@ -1,0 +1,11 @@
+version: "3"
+services:
+  portainer:
+    image: docker.io/portainer/portainer
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /data/docker_file/portainer/data:/usr/share/elasticsearch/data
+    restart: always
+    ports:
+      - 9000:9000

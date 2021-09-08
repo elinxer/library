@@ -1,0 +1,36 @@
+version: '3'
+# docker jira ref: https://blog.csdn.net/weixin_37558119/article/details/113246972
+services:
+  mysql:
+    image: mysql:5.7.22
+    container_name: mysql
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    # data 用来存放了数据库表文件，init存放初始化的脚本
+    volumes:
+      - /data/docker_file/mysql/data/:/var/lib/mysql/
+      - /data/docker_file/mysql/conf/my.cnf:/etc/my.cnf
+      - /data/docker_file/mysql/init:/docker-entrypoint-initdb.d/
+    restart: always
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev123
+  jira:
+    image: atlassian/jira-software:8.5.1
+    container_name: jira
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /data/docker_file/jira/data:/var/atlassian/jira
+      - /data/docker_file/jira/mysql-connector-java-5.1.49.jar:/opt/atlassian/jira/atlassian-jira/WEB-INF/lib/mysql-connector-java-5.1.49.jar
+      - /data/docker_file/jira/atlassian-extras-3.2.jar:/opt/atlassian/jira/atlassian-jira/WEB-INF/lib/atlassian-extras-3.2.jar

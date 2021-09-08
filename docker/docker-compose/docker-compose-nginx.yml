@@ -1,0 +1,18 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: always
+    volumes:
+      # 配置目录
+      - /data/docker_file/nginx/conf.d:/etc/nginx/conf.d
+      # 访问日志
+      - /data/docker_file/nginx/logs:/var/log/nginx
+      # 存放静态代理资源
+      - /data/docker_file/nginx/www:/var/www
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - TZ=Asia/Shanghai

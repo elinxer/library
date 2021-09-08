@@ -1,0 +1,13 @@
+version: '3'
+services:
+  canal-admin:
+    image: canal/canal-admin:v1.1.4
+    container_name: canal-admin
+    ports:
+      - 8089:8089
+    environment:
+      - server.port=8089
+      - canal.adminUser=admin
+      - canal.adminPasswd=admin
+    volumes:
+      - ./canal-admin/logs/:/home/admin/canal-admin/logs

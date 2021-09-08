@@ -1,0 +1,10 @@
+# ref https://github.com/excalidraw/excalidraw
+# see https://excalidraw.com
+version: "3"
+services:
+  excalidraw:
+    image: guillaumebriday/excalidraw:latest
+    container_name: excalidraw
+    restart: on-failure
+    ports:
+      - "5000:80"
