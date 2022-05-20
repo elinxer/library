@@ -1,0 +1,20 @@
+#https://docs.gitlab.com/ee/install/docker.html
+version: '3.6'
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    container_name: gitlab
+    hostname: 'gitlab.zzkj.dbn.cn'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.zzkj.dbn.cn:8088'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    ports:
+      - '8088:8088'
+      - '2224:22'
+    volumes:
+      - '/data/gitlab/config:/etc/gitlab'
+      - '/data/gitlab/logs:/var/log/gitlab'
+      - '/data/gitlab/data:/var/opt/gitlab'
+

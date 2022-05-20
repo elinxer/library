@@ -4,12 +4,13 @@
 version: '3'
 services:
   nexus:
-    image: 'sonatype/nexus3'
-    container_name: nexus
+    image: 'docker.io/sonatype/nexus3'
+    container_name: nexus3
     restart: always
+    privileged: true
     environment:
       - TZ=Asia/Shanghai
     ports:
-      - '8931:8081'
+      - '8081:8081'
     volumes:
-      - './docker-nexus/data:/nexus-data'
+      - '/data/nexus-data:/nexus-data' # sudo chmod -R 777 /data/nexus-data
