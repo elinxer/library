@@ -11,7 +11,10 @@ class MbpromptItem(scrapy.Item):
     # name = scrapy.Field()
 
     name = scrapy.Field()
-    picUrl = scrapy.Field()
+    pic = scrapy.Field()
     desc = scrapy.Field()
+    topic_name = scrapy.Field()
+    topic_id = scrapy.Field()
+    gallery_id = scrapy.Field()
 
     pass
