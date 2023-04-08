@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: dbn-cloud-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.zzkj.dbn.cn:80
+        namespace: 0c723e22-3702-442a-b156-43b710cb5ea7
+      config:
+        server-addr: nacos.zzkj.dbn.cn:80
+        namespace: 0c723e22-3702-442a-b156-43b710cb5ea7
+        group: DEFAULT_GROUP
+        file-extension: yaml
+#        extension-configs:
+#          - data-id: common.yaml
+#            group: DEFAULT_GROUP
+#            refresh: true
+    gateway:
+      httpclient:
+        connect-timeout: 600000
+        response-timeout: 300s
+
+feign:
+  hystrix:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 100000
+        readTimeout: 100000

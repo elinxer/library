@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <property resource="logback.properties"/>
+    <appender name="CONSOLE-LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>[%d{yyyy-MM-dd' 'HH:mm:ss.sss}] [%C] [%t] [%L] [%-5p] %m%n</pattern>
+        </layout>
+    </appender>
+    <!--获取比info级别高(包括info级别)但除error级别的日志-->
+    <appender name="INFO-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd' 'HH:mm:ss.sss}] [%C] [%t] [%L] [%-5p] %m%n</pattern>
+        </encoder>
+
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>${LOG_HOME}/dbn-cloud-vns-server.info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 日志保存天数 -->
+            <maxHistory>2</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!--每个文件最多100MB，保留2天的历史记录，但最多10GB，超过10GB，默认清除最早的那份日志-->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!-- 按照序号输出日志，最大为100MB -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ERROR-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd' 'HH:mm:ss.sss}] [%C] [%t] [%L] [%-5p] %m%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>${LOG_HOME}/dbn-cloud-vns-server.error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 日志保存天数 -->
+            <maxHistory>2</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!--每个文件最多100MB，保留2天的历史记录，但最多1GB，超过10GB，默认清除最早的那份日志-->
+            <totalSizeCap>1GB</totalSizeCap>
+            <!-- 按照序号输出日志，最大为100MB -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+    <appender name="ADD" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/log_assist_basic_stat.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%msg%n</Pattern>
+        </layout>
+    </appender>
+    <appender name="ADD_INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1048576</queueSize>
+        <appender-ref ref="ADD" />
+    </appender>
+    <logger name="log_assist_basic_stat" level="INFO" additivity="false">
+        <appender-ref ref="ADD_INFO" />
+    </logger>
+
+
+    <root level="info">
+        <appender-ref ref="CONSOLE-LOG"/>
+        <appender-ref ref="INFO-LOG"/>
+        <appender-ref ref="ERROR-LOG"/>
+    </root>
+</configuration>

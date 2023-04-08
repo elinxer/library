@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: cloud-library-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.211.129.67:8848
+        namespace: dev
+      config:
+        server-addr: 10.211.129.67:8848
+        namespace: dev
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        extension-configs:
+          - data-id: common-config.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: common-db.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: common-redis.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+
+# Sentinel log 目前发现仅仅在指令端VM配置参数生效
+# -Dcsp.sentinel.log.dir=/data/logs/cloud-library/csp/

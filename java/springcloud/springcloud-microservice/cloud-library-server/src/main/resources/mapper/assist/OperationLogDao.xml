@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elinxer.cloud.library.server.assist.domain.dao.OperationLogDao">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.elinxer.cloud.library.server.assist.domain.entity.OperationLog">
+        <result column="id" property="id"/>
+        <result column="operation_code" property="operationCode"/>
+        <result column="type" property="type"/>
+        <result column="json_value" property="jsonValue"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_userId" property="createUserId"/>
+        <result column="update_userId" property="updateUserId"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,operation_code,type,json_value,
+        create_time,update_time,create_userId,update_userId,deleted
+    </sql>
+
+<!--    <select id="detail" resultType="com.dbn.cloud.admin.server.assist.domain.vo.WorkVo">-->
+<!--        SELECT w.*,-->
+<!--        t.NAME AS typeName-->
+<!--        FROM `tbl_assist_app_operation` AS w-->
+<!--        LEFT JOIN tbl_operation_type t ON w.type = t.id-->
+<!--        <where>-->
+<!--            w.deleted != 1 AND w.id = #{id}-->
+<!--        </where>-->
+<!--    </select>-->
+
+<!--    <select id="list" resultType="com.dbn.cloud.admin.server.assist.entity.Work">-->
+<!--        SELECT w.*,-->
+<!--        t.NAME AS typeName-->
+<!--        FROM `tbl_assist_app_operation` AS w-->
+<!--        LEFT JOIN tbl_operation_type t ON w.type = t.id-->
+<!--        <where>-->
+<!--            w.deleted != 1-->
+<!--        </where>-->
+<!--    </select>-->
+
+<!--    <select id="page" resultType="com.dbn.cloud.admin.server.assist.entity.Work">-->
+<!--        SELECT w.*,-->
+<!--        t.NAME AS typeName-->
+<!--        FROM `tbl_assist_app_operation` AS w-->
+<!--        LEFT JOIN tbl_operation_type t ON w.type = t.id-->
+<!--        <where>-->
+<!--            w.deleted != 1-->
+<!--        </where>-->
+<!--        ORDER BY w.id DESC-->
+<!--        LIMIT #{start}, #{size};-->
+<!--    </select>-->
+
+<!--    <select id="count" resultType="integer">-->
+<!--        SELECT count(1)-->
+<!--        FROM `tbl_assist_app_operation` WHERE deleted != 1;-->
+<!--    </select>-->
+</mapper>

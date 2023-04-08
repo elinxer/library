@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elinxer.cloud.library.server.assist.domain.dao.AblineDao">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.elinxer.cloud.library.server.assist.domain.entity.Abline">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="desc" property="desc"/>
+        <result column="category" property="category"/>
+        <result column="params" property="params"/>
+        <result column="a_point" property="aPoint"/>
+        <result column="b_point" property="bPoint"/>
+        <result column="location" property="location"/>
+        <result column="width" property="width"/>
+        <result column="geometry" property="geometry"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_userId" property="createUserId"/>
+        <result column="update_userId" property="updateUserId"/>
+        <result column="geo_hash" property="geoHash"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,name,code,desc,category,params,a_point,b_point,location,width,geometry
+        create_time,update_time,create_userId,update_userId,deleted,geo_hash
+    </sql>
+
+    <select id="detail" resultType="com.elinxer.cloud.library.server.assist.domain.vo.AbLineVo">
+        SELECT * FROM `tbl_assist_app_abline`
+        <where>
+            deleted != 1 AND id = #{id}
+        </where>
+    </select>
+
+    <select id="page" resultType="com.elinxer.cloud.library.server.assist.domain.entity.Abline">
+        SELECT * FROM `tbl_assist_app_abline`
+        <where>
+            deleted != 1
+        </where>
+        ORDER BY id DESC
+        LIMIT #{start}, #{size};
+    </select>
+
+    <select id="count" resultType="integer">
+        SELECT count(1)
+        FROM `tbl_assist_app_abline` WHERE deleted != 1;
+    </select>
+</mapper>
