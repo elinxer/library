@@ -25,7 +25,7 @@ class MbpromptPipeline:
 
     def process_item(self, item, spider):
         # 判断字段值不为空再写入文件
-        print("正在写入......")
+        print("================ 正在写入...... ================")
         if item['name']:
             # 主要是解决存入csv文件时出现的每一个字以‘，’隔离
             self.writer.writerow(

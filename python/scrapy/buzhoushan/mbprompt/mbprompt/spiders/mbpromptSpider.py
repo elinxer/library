@@ -19,18 +19,18 @@ class MbpromptspiderSpider(scrapy.Spider):
     headers = {'User-Agent': UserAgent, 'Content-Type': 'application/x-www-form-urlencoded'}
 
     topic = ["主题", "风格", "艺术家", "镜头", "技巧", "材质", "光线", "布局", "建筑", "时代", "电影&游戏", "人物",
-             "时装", "背景", "构图", "国风", "情绪", "暂定", "暂定"]
+             "时装", "背景", "构图", "国风", "情绪", "暂定"]
 
     topic_ids = ["44", "46", "43", "47", "48", "49", "50", "51", "52", "53", "54", "60",
-                 "57", "58", "63", "64", "情绪", "暂定", "暂定"]
+                 "57", "58", "63", "64", "情绪", "暂定"]
 
     gallery_ids = ["7", "6", "3", "9", "5", "8", "10", "4", "12", "11", "13", "16",
-                   "14", "15", "18", "17", "情绪", "暂定", "暂定"]
+                   "14", "15", "18", "17", "情绪", "暂定"]
 
     # current = 0
     # current = 1
     # current = 2
-    current = 3
+    # current = 3
     # current = 4
     # current = 5
     # current = 6
@@ -42,14 +42,14 @@ class MbpromptspiderSpider(scrapy.Spider):
     # current = 12
     # current = 13
     # current = 14
-    # current = 15
-    # current = 16
+    current = 15
 
     topic_id = topic_ids[current]
     topic_name = topic[current]
     gallery_id = gallery_ids[current]
 
     page = 1
+    max_page = 20
 
     def start_requests(self):
         for url in self.topic:
@@ -93,7 +93,7 @@ class MbpromptspiderSpider(scrapy.Spider):
             yield item
 
         self.page += 1
-        if self.page >= 20:
+        if self.page >= self.max_page:
             pass
         else:
             # next_url = response.xpath('//div//a[@class="bwg_load_btn"]/@href').extract_first()
