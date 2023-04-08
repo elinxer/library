@@ -30,6 +30,7 @@ logs/
 *.diff
 *.patch
 *.tmp
+*/.idea/
 
 # system ignore
 .DS_Store
