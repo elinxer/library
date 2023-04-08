@@ -57,7 +57,7 @@
 
         <kaptcha.version>0.0.9</kaptcha.version>
         <!-- mybatis  -->
-        <mysql-connector-java.version>8.0.21</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <alibaba.druid.version>1.1.14</alibaba.druid.version>
         <mybatis.version>3.5.6</mybatis.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
