@@ -4,29 +4,41 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 
+import csv
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
 import os
+import random
+
 import requests
-import json
 
 
 class LexicaArtPipeline:
 
-    # 接口内容完整保存
+    def __init__(self):
+        # csv文件的位置,无需事先创建
+        store_file = os.path.dirname(__file__) + '/spiders/prompts.csv'
+        print("***************************************************************")
+        # 打开(创建)文件
+        self.file = open(store_file, 'a+', encoding="utf-8", newline='')
+        # csv写法
+        self.writer = csv.writer(self.file, dialect="excel")
+        self.writer.writerow(
+            ["id", "cat", "model", "seed", "height", "width", 'prompt', "next_cursor", "image_id", "upscaled_height",
+             "upscaled_width", "image_height", "image_width"])
 
-    # 图片关系保存
-
-    # 图片下载
-
-    def download_image(image_url, storage_path):
+    def download_image(self, image_url, storage_path):
+        UserAgents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 QIHU 360SE',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+        ]
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+            'User-Agent': random.choice(UserAgents)
         }
         img_path = image_url.split('/')[-1]
-        img_prefix = img_path.split('.')[-1]
-        img_name = img_path.split('.')[-2]
-        print(img_path, img_name, img_prefix)
+        img_prefix = "webp"
+        img_name = image_url.split('/')[-1]
+        # print(img_path, img_name, img_prefix)
         new_path = storage_path + img_name + "." + img_prefix
         if not os.path.exists(storage_path):
             os.mkdir(storage_path)
@@ -34,27 +46,24 @@ class LexicaArtPipeline:
         # download image
         with open(new_path, mode="wb") as f:
             f.write(r.content)
-        print("====> download success: " + new_path)
-        pass
-
-    def save_relation(storage, body):
-        img_path = storage + body['pic'].split('/')[-1]
-        print(img_path)
-        if not os.path.exists(storage):
-            os.mkdir(storage)
-        # mode中"a"是追加模式，"r"是只读模式，默认“w”是重写模式
-        f = open(storage, mode="a")
-        f.write(body['name'] + " | " + img_path + " | " + body['pic'] + "\n")
-        pass
-
-    def save_api(self, storage, item):
-        # if not os.path.exists(storage):
-        # os.mkdir(storage)
-        # mode中"a"是追加模式，"r"是只读模式，默认“w”是重写模式
-        f = open(storage, mode="a")
-        f.write(str(item) + "\n||\n")
+        # print("====> download success: " + new_path)
         pass
 
     def process_item(self, item, spider):
-        self.save_api("api.txt", item)
+        # print("================ 正在写入API...... ================")
+        # 图片下载
+        for image in item['images']:
+            self.writer.writerow([
+                item['id'], item['c'], item['model'], item['seed'], item['height'], item['width'], item['prompt'],
+                item['next_cursor'], image['id'], image['upscaled_height'], image['upscaled_width'],
+                image['height'], image['width']
+            ])
+            image_url = "https://image.lexica.art/md2/" + image['id']
+            # START DOWNLOAD
+            self.download_image(image_url, "md2/")
+            pass
         return item
+
+    def close_spider(self, spider):
+        # 关闭爬虫时顺便将文件保存退出
+        self.file.close()
