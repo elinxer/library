@@ -59,6 +59,7 @@ class LexicapromptSpider(scrapy.Spider):
             item['prompt'] = prompt['prompt']
             item['prompt'] = prompt['prompt']
             item['next_cursor'] = next_cursor
+            item['negative'] = prompt['negativePrompt']
             yield item
             pass
 

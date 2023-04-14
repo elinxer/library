@@ -16,7 +16,7 @@ class LexicaArtPipeline:
 
     def __init__(self):
         # csv文件的位置,无需事先创建
-        store_file = os.path.dirname(__file__) + '/spiders/prompts.csv'
+        store_file = os.path.dirname(__file__) + '/../prompts.csv'
         print("***************************************************************")
         # 打开(创建)文件
         self.file = open(store_file, 'a+', encoding="utf-8", newline='')
@@ -24,7 +24,7 @@ class LexicaArtPipeline:
         self.writer = csv.writer(self.file, dialect="excel")
         self.writer.writerow(
             ["id", "cat", "model", "seed", "height", "width", 'prompt', "next_cursor", "image_id", "upscaled_height",
-             "upscaled_width", "image_height", "image_width"])
+             "upscaled_width", "image_height", "image_width", "negative_prompt"])
 
     def download_image(self, image_url, storage_path):
         UserAgents = [
@@ -42,6 +42,9 @@ class LexicaArtPipeline:
         new_path = storage_path + img_name + "." + img_prefix
         if not os.path.exists(storage_path):
             os.mkdir(storage_path)
+        if os.path.exists(new_path):
+            print("====> download error exists: " + new_path)
+            return
         r = requests.get(image_url, headers=headers)
         # download image
         with open(new_path, mode="wb") as f:
@@ -56,7 +59,7 @@ class LexicaArtPipeline:
             self.writer.writerow([
                 item['id'], item['c'], item['model'], item['seed'], item['height'], item['width'], item['prompt'],
                 item['next_cursor'], image['id'], image['upscaled_height'], image['upscaled_width'],
-                image['height'], image['width']
+                image['height'], image['width'], item['negative']
             ])
             image_url = "https://image.lexica.art/md2/" + image['id']
             # START DOWNLOAD

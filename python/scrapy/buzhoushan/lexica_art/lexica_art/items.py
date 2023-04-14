@@ -19,5 +19,6 @@ class LexicaArtItem(scrapy.Item):
     width = scrapy.Field()
     prompt = scrapy.Field()
     next_cursor = scrapy.Field()
+    negative = scrapy.Field()
 
     pass
