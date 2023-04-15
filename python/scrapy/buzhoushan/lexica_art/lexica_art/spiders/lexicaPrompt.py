@@ -27,6 +27,8 @@ class LexicapromptSpider(scrapy.Spider):
     page_size = 50
     max_cursor = 10000
 
+    # 最大 7800
+
     def start_requests(self):
         for url in self.start_urls:
             yield Request(url, headers=self.headers, method="POST", body=json.dumps({
@@ -39,12 +41,12 @@ class LexicapromptSpider(scrapy.Spider):
         pass
 
     def parse(self, response):
-        print(response.request.headers)
+        # print(response.request.headers)
         print(response.request.body)
         responseJson = json.loads(response.text)
         # images = responseJson["images"]
         prompts = responseJson["prompts"]
-        print("===> nextCursor : ", responseJson["nextCursor"])
+        print("===> nextCursor response: ", responseJson["nextCursor"])
         next_cursor = responseJson["nextCursor"]
         for prompt in prompts:
             # print(prompt)
@@ -58,14 +60,13 @@ class LexicapromptSpider(scrapy.Spider):
             item['width'] = prompt['width']
             item['prompt'] = prompt['prompt']
             item['prompt'] = prompt['prompt']
-            item['next_cursor'] = next_cursor
+            item['next_cursor'] = self.next_cursor
             item['negative'] = prompt['negativePrompt']
             yield item
-            pass
 
         # next_cursor 先加
-        self.next_cursor += self.page_size
-        if self.next_cursor <= self.max_cursor and prompts:
+        if next_cursor != 1 and prompts:
+            self.next_cursor += self.page_size
             # print("=========> next_url: ", self.start_urls[0], self.next_cursor)
             # 因为scrapy会去掉重复的链接，所以当请求一次没有获取数据时，想要换个代理ip继续请求要加上dont_filter=True
             yield Request(self.start_urls[0], dont_filter=True, headers=self.headers, method="POST", body=json.dumps({
@@ -76,5 +77,5 @@ class LexicapromptSpider(scrapy.Spider):
                 "model": "lexica-aperture-v2"
             }))
         else:
-            print("===> nextCursor : ", self.next_cursor)
+            print("===> nextCursor end: ", self.next_cursor)
         pass

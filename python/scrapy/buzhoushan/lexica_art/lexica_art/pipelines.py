@@ -44,13 +44,14 @@ class LexicaArtPipeline:
             os.mkdir(storage_path)
         if os.path.exists(new_path):
             print("====> download error exists: " + new_path)
-            return
-        r = requests.get(image_url, headers=headers)
-        # download image
-        with open(new_path, mode="wb") as f:
-            f.write(r.content)
-        # print("====> download success: " + new_path)
-        pass
+            pass
+        else:
+            r = requests.get(image_url, headers=headers)
+            # download image
+            with open(new_path, mode="wb") as f:
+                f.write(r.content)
+            # print("====> download success: " + new_path)
+            pass
 
     def process_item(self, item, spider):
         # print("================ 正在写入API...... ================")
