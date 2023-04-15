@@ -9,6 +9,7 @@ import csv
 import os
 import random
 
+import pymysql
 import requests
 
 
@@ -25,6 +26,9 @@ class LexicaArtPipeline:
         self.writer.writerow(
             ["id", "cat", "model", "seed", "height", "width", 'prompt', "next_cursor", "image_id", "upscaled_height",
              "upscaled_width", "image_height", "image_width", "negative_prompt"])
+
+        self.db = pymysql.connect(host="47.119.145.8", user="root", passwd="#p?Z#x+eq4jp", db="test", charset="utf8")
+        self.cursor = self.db.cursor()
 
     def download_image(self, image_url, storage_path):
         UserAgents = [
@@ -57,17 +61,36 @@ class LexicaArtPipeline:
         # print("================ 正在写入API...... ================")
         # 图片下载
         for image in item['images']:
-            self.writer.writerow([
-                item['id'], item['c'], item['model'], item['seed'], item['height'], item['width'], item['prompt'],
+            prompt = item['prompt'].replace('\r', '').replace('\n', '').replace('\t', '')
+            negative = item['negative'].replace('\r', '').replace('\n', '').replace('\t', '')
+
+            save_item = [
+                item['id'], item['c'], item['model'], item['seed'], item['height'], item['width'], prompt,
                 item['next_cursor'], image['id'], image['upscaled_height'], image['upscaled_width'],
-                image['height'], image['width'], item['negative']
-            ])
+                image['height'], image['width'], negative
+            ]
+
+            self.writer.writerow(save_item)
+
+            self.mysql_save(save_item)
+
             image_url = "https://image.lexica.art/md2/" + image['id']
             # START DOWNLOAD
-            self.download_image(image_url, "md2/")
+            # self.download_image(image_url, "md2/")
             pass
         return item
 
     def close_spider(self, spider):
         # 关闭爬虫时顺便将文件保存退出
         self.file.close()
+        self.cursor.close()
+        self.db.close()
+
+    def mysql_save(self, save_item):
+        self.cursor.execute(
+            "INSERT INTO `test`.`library_prompt_lexica`(`guid`, `c`, `model`, `seed`, `height`, `width`, `prompt`, `next_cursor`, `image_id`, `upscaled_height`, `upscaled_width`, `image_height`, `image_width`, `negative_prompt`) "
+            + " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            save_item
+        )
+        self.db.commit()
+        pass
