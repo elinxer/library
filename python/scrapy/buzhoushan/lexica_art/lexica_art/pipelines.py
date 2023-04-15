@@ -88,7 +88,7 @@ class LexicaArtPipeline:
 
     def mysql_save(self, save_item):
         self.cursor.execute(
-            "INSERT INTO `test`.`library_prompt_lexica`(`guid`, `c`, `model`, `seed`, `height`, `width`, `prompt`, `next_cursor`, `image_id`, `upscaled_height`, `upscaled_width`, `image_height`, `image_width`, `negative_prompt`) "
+            "INSERT IGNORE INTO `test`.`library_prompt_lexica`(`guid`, `c`, `model`, `seed`, `height`, `width`, `prompt`, `next_cursor`, `image_id`, `upscaled_height`, `upscaled_width`, `image_height`, `image_width`, `negative_prompt`) "
             + " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             save_item
         )
