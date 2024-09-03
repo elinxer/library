@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: cloud-gateway-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.211.129.67:8848
+        namespace: dev
+      config:
+        server-addr: 10.211.129.67:8848
+        namespace: dev
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        extension-configs:
+          - data-id: common-config.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: common-db.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: common-redis.yaml
+            group: DEFAULT_GROUP
+            refresh: true
