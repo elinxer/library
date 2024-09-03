@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.elinxer.cloud</groupId>
+        <artifactId>springcloud-platform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.dbn.cloud</groupId>
+    <artifactId>dbn-cloud-platform-exception</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>dbn-cloud-platform-exception</name>
+    <description>Demo project for Spring Boot</description>
+    <properties>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.dbn.cloud</groupId>
+            <artifactId>dbn-cloud-platform-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${fasterxml.jackson-databind.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+    </dependencies>
+
+
+</project>

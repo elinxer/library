@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dbn.cloud.platform.common.config.GlobalFeignConfig,\
+com.dbn.cloud.platform.common.config.JacksonConfiguration,\
+com.dbn.cloud.platform.common.utils.SpringUtils

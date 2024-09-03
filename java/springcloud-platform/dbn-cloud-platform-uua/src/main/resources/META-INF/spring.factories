@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dbn.cloud.platform.uua.authorize.impl.AuthAuthorizeConfigProvider,\
+com.dbn.cloud.platform.uua.authorize.OpenAuthorizeConfigManager,\
+com.dbn.cloud.platform.uua.config.SecurityHandlerConfig,\
+com.dbn.cloud.platform.uua.UuaClientAutoConfig

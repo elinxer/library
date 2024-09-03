@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dbn.cloud.platform.security.config.FeignInterceptorConfig,\
+com.dbn.cloud.platform.security.config.PasswordConfig,\
+com.dbn.cloud.platform.security.config.RestTemplateConfig,\
+com.dbn.cloud.platform.security.config.TokenStoreConfig

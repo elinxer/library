@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dbn.cloud.platform.web.crud.CrudAutoConfig, \
+com.dbn.cloud.platform.web.BinderControllerAdvice
