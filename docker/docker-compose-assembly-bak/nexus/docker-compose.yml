@@ -1,0 +1,13 @@
+# https://www.cnblogs.com/linanjie/p/13932377.html
+version: '3'
+services:
+  nexus:
+    image: 'sonatype/nexus3'
+    container_name: nexus
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - '8931:8081'
+    volumes:
+      - './docker-nexus/data:/nexus-data'

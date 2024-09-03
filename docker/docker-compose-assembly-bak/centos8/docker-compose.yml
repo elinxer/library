@@ -1,0 +1,11 @@
+version : '3'
+services :
+   centos8 :
+     image : centos:centos8
+     container_name : centos8
+     volumes :
+        - D:/develop:/data
+     ports :
+        - 2222:22
+        - 4443:443
+     restart: always

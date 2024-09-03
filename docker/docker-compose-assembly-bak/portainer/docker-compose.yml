@@ -1,0 +1,21 @@
+version : '3'
+services :
+   centos8 :
+     image : centos:centos8
+     container_name : portainer
+     volumes :
+        - C:/Program Files/Docker/Docker:\\.\pipe\docker_engine
+        - ./data:portainer_data
+     ports :
+        - 8000:8000
+        - 9000:9000
+     restart: always
+
+
+
+# C:\Program Files\Docker\Docker
+# docker run -d --name portainer -p 10001:9000 --restart=always -v /c/Program Files/Docker/Docker/portainer:/var/run/docker.sock portainer/portainer
+
+
+
+# docker run -d --name portainer -p 10001:9000 --restart=always -v /c/Program Files/Docker/Docker:\\.\pipe\docker_engine portainer/portainer
