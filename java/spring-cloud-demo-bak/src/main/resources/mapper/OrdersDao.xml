@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiteer.demo.demouser.dao.OrdersDao">
+
+
+    <!-- 根据用户uid查询订单信息 -->
+    <select id="selectOrdersById" resultType="com.zhiteer.demo.demouser.model.Orders"
+            parameterType="Integer">
+        select * from orders where user_id=#{id}
+    </select>
+
+
+
+</mapper>
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiteer.demo.demouser.dao.MyUserMapper">
+
+    <select id="selectUserById" parameterType="Integer" resultType="com.zhiteer.demo.demouser.model.MyUser">
+        select * from user where id=#{id}
+    </select>
+
+    <select id="selectAllUser" resultType="com.zhiteer.demo.demouser.model.MyUser">
+        select * from user;
+    </select>
+
+    <insert id="addUser" parameterType="com.zhiteer.demo.demouser.model.MyUser">
+        insert into user(name, age)
+        values (#{name}, #{age})
+    </insert>
+
+    <update id="updateUser" parameterType="com.zhiteer.demo.demouser.model.MyUser">
+        update user set name=#{name}, age=#{age} where id=#{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="Integer">
+        delete from user where id=#{id}
+    </delete>
+
+</mapper>

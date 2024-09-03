@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiteer.demo.demouser.dao.MyUserDao">
+
+
+
+
+    <!--<resultMap> 元素的 type 属性表示需要的 POJO，id 属性是 resultMap 的唯一标识。-->
+<!--    <resultMap id="resultMapDemo1" type="com.zhiteer.demo.demouser.model.MyUser">-->
+
+<!--        <constructor>&lt;!&ndash; 类再实例化时用来注入结果到构造方法 &ndash;&gt;-->
+<!--            <idArg/>&lt;!&ndash; ID参数，结果为ID &ndash;&gt;-->
+<!--            <arg/>&lt;!&ndash; 注入到构造方法的一个普通结果 &ndash;&gt;-->
+<!--        </constructor>-->
+<!--        <id/>&lt;!&ndash; 用于表示哪个列是主键 &ndash;&gt;-->
+<!--        <result/>&lt;!&ndash; 注入到字段或JavaBean属性的普通结果 &ndash;&gt;-->
+<!--        <association property=""/>&lt;!&ndash; 用于一对一关联 &ndash;&gt;-->
+<!--        <collection property=""/>&lt;!&ndash; 用于一对多、多对多关联 &ndash;&gt;-->
+<!--        <discriminator javaType="">&lt;!&ndash; 使用结果值来决定使用哪个结果映射 &ndash;&gt;-->
+<!--            <case value=""/>&lt;!&ndash; 基于某些值的结果映射 &ndash;&gt;-->
+<!--        </discriminator>-->
+
+<!--    </resultMap>-->
+
+    <!--一条查询 SQL 语句执行后将返回结果，而结果可以使用 Map 存储，也可以使用 POJO 存储。-->
+    <!--使用自定义结果集类型-->
+    <resultMap id="resultMapDemo1" type="com.zhiteer.demo.demouser.model.MyUser">
+        <!-- property 是 com.zhiteer.demo.demouser.model.MyUser 类中的属性-->
+        <!-- column是查询结果的列名，可以来自不同的表,property类似别名对应实体类-->
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="uname" column="name"/>
+    </resultMap>
+
+    <!-- 查询所有用户信息存到Map中，结果集是map类型-->
+    <select id="selectAllUserMap" resultType="map">
+        select * from user
+    </select>
+    <!-- 使用自定义结果集类型查询所有用户 -->
+    <select id="selectAllUserResultMap" resultMap="resultMapDemo1">
+        select * from user
+    </select>
+
+
+    <select id="selectUserById" parameterType="Integer" resultType="com.zhiteer.demo.demouser.model.MyUser">
+        select * from user where id=#{id}
+    </select>
+
+
+
+
+
+    <select id="selectAllUser" resultType="com.zhiteer.demo.demouser.model.MyUser">
+        select * from user
+    </select>
+
+
+
+
+
+    <!--入参类型为实体User类，故可以直接调用实体属性名，而不是map类型的点号去识别-->
+    <insert id="addUser" parameterType="com.zhiteer.demo.demouser.model.MyUser">
+        insert into user(name, age)
+        values (#{name}, #{age})
+    </insert>
+
+
+
+
+
+    <!--入参可以是实体类，也可以是自定义的请求参数类型的实体类，不一定是model-->
+    <update id="updateUser" parameterType="com.zhiteer.demo.demouser.model.MyUser">
+        update user set name=#{name}, age=#{age} where id=#{id}
+    </update>
+
+
+
+
+
+    <delete id="deleteUser" parameterType="Integer">
+        delete from user where id=#{id}
+    </delete>
+
+
+
+
+
+    <update id="updateUserDemo" parameterType="com.zhiteer.demo.demouser.model.MyUser">
+        update user
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="age !=null">
+                age = #{age, jdbcType=INTEGER},
+            </if>
+        </set>
+        where id=#{id, jdbcType=INTEGER}
+    </update>
+
+
+
+
+
+    <select id="selectUserLike" resultType="com.zhiteer.demo.demouser.model.MyUser">
+        select * from user where 1=1
+        <if test="name!=null">
+            and name like concat('', #{name},'%')
+        </if>
+        <if test="age!=null">
+            and name=#{age}
+        </if>
+    </select>
+
+
+
+
+
+</mapper>

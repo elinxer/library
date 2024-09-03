@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiteer.demo.demouser.dao.UserOrderDao">
+
+
+    <!-- 一对多 根据uid查询用户及其关联的订单信息：级联查询的第一种方法（嵌套查询） -->
+    <resultMap type="com.zhiteer.demo.demouser.model.MyUser" id="userAndOrders1">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="age" column="age" />
+
+        <collection property="ordersList" ofType="com.zhiteer.demo.demouser.model.Orders"
+                    column="id" select="com.zhiteer.demo.demouser.dao.OrdersDao.selectOrdersById" />
+
+    </resultMap>
+
+    <select id="selectUserOrdersById1" parameterType="Integer" resultMap="userAndOrders1">
+        select * from user where id = #{id}
+    </select>
+
+
+    <!--对多根据uid查询用户及其关联的订单信息：级联查询的第二种方法（嵌套结果） -->
+    <resultMap type="com.zhiteer.demo.demouser.model.MyUser" id="userAndOrders2">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="age" column="age" />
+        <!-- 对多级联查询，ofType表示集合中的元素类型 -->
+        <collection property="ordersList" ofType="com.zhiteer.demo.demouser.model.Orders">
+            <id property="id" column="id" />
+            <result property="userId" column="user_id" />
+            <result property="ordersn" column="ordersn" />
+        </collection>
+    </resultMap>
+
+    <select id="selectUserOrdersById2" parameterType="Integer" resultMap="userAndOrders2">
+        select u.*, o.user_id, o.ordersn from user u, orders o where u.id
+            = o.user_id and
+            u.id=#{id}
+    </select>
+
+    <!-- 一对多 根据uid查询用户及其关联的订单信息：连接查询（使用POJO存储结果） -->
+    <select id="selectUserOrdersById3" parameterType="Integer"
+            resultType="com.zhiteer.demo.demouser.model.SelectUserOrdersById">
+        select u.*, o.id, o.ordersn from user u, orders o where
+            u.id = o.user_id
+            and u.id=#{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiteer.demo.demouser.dao.PersonDao">
+
+
+
+    <!--一条查询 SQL 语句执行后将返回结果，而结果可以使用 Map 存储，也可以使用 POJO 存储。-->
+    <!--使用自定义结果集类型-->
+
+
+    <resultMap type="com.zhiteer.demo.demouser.model.Person" id="cardAndPerson1">
+
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+
+        <!-- 一对一级联查询-->
+        <association property="card" column="idcard_id" javaType="com.zhiteer.demo.demouser.model.IdCard"
+                     select="com.zhiteer.demo.demouser.dao.IdCardDao.selectCodeById"/>
+
+    </resultMap>
+
+    <select id="selectPersonById1" parameterType="Integer" resultMap="cardAndPerson1">
+        select * from person where id=#{id}
+    </select>
+
+
+
+
+    <!-- 一对一根据id查询个人信息：级联查询的第二种方法（嵌套结果，执行一个SQL语句）-->
+    <resultMap type="com.zhiteer.demo.demouser.model.Person" id="cardAndPerson2">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <!-- 一对一级联查询-->
+        <association property="card2" javaType="com.zhiteer.demo.demouser.model.IdCard">
+            <id property="id" column="idcard_id"/>
+            <result property="code" column="code"/>
+        </association>
+    </resultMap>
+
+    <select id="selectPersonById2" parameterType="Integer" resultMap= "cardAndPerson2">
+        select p.*,ic.code
+        from person p, idcard ic
+        where p.idcard_id=ic.id and p.id=#{id}
+    </select>
+
+
+
+
+    <!-- 一对一根据id查询个人信息：连接查询（使用POJO存储结果）-->
+    <select id="selectPersonById3" parameterType="Integer" resultType= "com.zhiteer.demo.demouser.model.SelectPersonById">
+        select p.*,ic.code
+        from person p, idcard ic
+        where p.idcard_id = ic.id and p.id=#{id}
+    </select>
+
+
+</mapper>
